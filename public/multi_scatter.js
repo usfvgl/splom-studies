@@ -76,9 +76,10 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 	// Encoding used for plotting points. _encoding needs to be one of the following Strings:
 	// filled_normal:  filled cirlces without color blending (default)
 	// filled_blended: filled circles with color blending
+	// alpha_blended:  filled circles with alpha blending
 	// open:           unfilled circles with color outline
 	var encoding = "filled_normal";
-	if ((_encoding.toLowerCase() === "filled_blended") || (_encoding.toLowerCase() === "open")) {
+	if ((_encoding.toLowerCase() === "filled_blended") || (_encoding.toLowerCase() === "alpha_blended") || (_encoding.toLowerCase() === "open")) {
 		encoding = _encoding.toLowerCase();
 	}
 
@@ -88,7 +89,8 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 		openStrokeWeight: 0.8,
 		size: 4.5,
 		colors: ['#8dd3c7','#fb8072','#80b1d3','#fdb462','#bc80bd','#b3de69','#fccde5','#d9d9d9','#ffffb3','#bebada'],
-		blend: "darken"
+		blend: "darken",
+		alpha: 125
 	};
 	
 	// padding and element size for grid containing load bar, pause button, and speed toggles
@@ -438,7 +440,11 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 			if (brushed > 0 && selected.indexOf(cat) < 0) {
 				fill(brushedColor);
 			} else {
-				fill(pointEncode.colors[i]);				
+				var pointFill = pointEncode.colors[i];
+				if (encoding === "alpha_blended") {
+					pointFill = addAlpha(pointFill);
+				}
+				fill(pointFill);
 			}
 			textAlign(LEFT, CENTER);
 			text(cat, xLegend + padding + keySize, yLegend + padding + yBands * (i + 1) + yBands/2);
@@ -455,6 +461,10 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 	// If buffer is provided, point will be drawn to buffer
 	// Otherwise, point will be drawn on-screen
 	function drawPoint(x, y, pointFill, buffer) {
+		
+		if (encoding === "alpha_blended") {
+			pointFill = addAlpha(pointFill);
+		}
 		
 		if (buffer === undefined) {
 			
@@ -504,6 +514,16 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 			
 		}
 		
+	}
+	
+	// If encoding use is alpha blending, adds alpha value to color given as
+	// a String and return the color
+	function addAlpha(colorString) {
+		var c = color(colorString);
+		var rVal = red(c);
+		var gVal = green(c);
+		var bVal = blue(c);
+		return color(rVal, gVal, bVal, pointEncode.alpha);
 	}
 	
 	function plotData(animate) {
