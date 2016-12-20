@@ -8,14 +8,7 @@
 
 <div id="alpha_blend">
 	<div id="chart"></div>
-	<div id="question"> Which of the letters below is your favorite?
-		<div id="letters">
-			<input type="radio" id="l1" name="letter" value="A"> A
-			<input type="radio" id="l2" name="letter" value="B"> B
-			<input type="radio" id="l3" name="letter" value="C"> C
-			<input type="radio" id="l4" name="letter" value="D"> D
-		</div>
-	</div>
+	<div id="question"> Drag the box next to the legend to one of the matrix grids.</div>
 </div>
 
 <script language="javascript" type="text/javascript">
@@ -33,7 +26,7 @@
 	var animate = {
 		isAnimate: false
 	};
-	var chartTitle = "Static Scatterplot Matrix with Alpha Blending";
+	var chartTitle = "Static Scatterplot Matrix with Alpha Blending and Draggable Box";
 
 	var rects = [
 		{
@@ -55,7 +48,7 @@
 		
 	];
 	
-	var chart = multi_scatter(dataSource, attr, category, animate, "alpha_blended", chartTitle, rects, "chart");
+	var chart = multi_scatter(dataSource, attr, category, animate, "alpha_blended", chartTitle, rects, "true", "chart");
 	var slider;
 	
 	function preload() {
@@ -70,8 +63,24 @@
 		chart.draw();
 	}
 	
+	function mouseClicked() {
+		chart.mouseClicked();
+	}
+	
 	function mousePressed() {
 		chart.mousePressed();
+	}
+
+	function mouseReleased() {
+		chart.mouseReleased();
+	}
+
+	function mouseMoved() {
+		chart.mouseMoved();
+	}
+	
+	function mouseDragged() {
+		chart.mouseDragged();
 	}
 	
 	(function() {
@@ -79,15 +88,17 @@
 
 		experimentr.startTimer('alpha_blending');
 
-		d3.selectAll('input')
-		.filter(function(d) { return this.name === 'letter' ? this : null; })
-		.on('change', function() { data.letter = this.value; validate(); });
+		d3.select("#chart")
+		.on('mouseup', function() { 
+			data.highlightRect = chart.highlightRect;
+			console.log(data.highlightRect);
+			validate();
+		});
 
 		function validate() {
-			if(data.letter) {
+			console.log(data.highlightRect);
+			if(data.highlightRect.x > 0 && data.highlightRect.y > 0) {
 				experimentr.endTimer('alpha_blending');
-				//data.session = chart.session;
-				//console.log(chart.session);
 				experimentr.addData(data);
 				experimentr.release();
 			}

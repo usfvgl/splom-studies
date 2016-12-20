@@ -1,4 +1,4 @@
-function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _chartTitle, _rectangles, div_name) {
+function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _chartTitle, _rectangles, _highlight, div_name) {
 
 	var params;
 	
@@ -156,7 +156,19 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 	var rectangles = [];
 	var rectColor = "rgba(89, 89, 89, 1)";	
 	var rectStrokeWeight = 1;
-	
+
+	// Set up highlight rectangle to be dragged around by user
+	var highlightRect = {
+		width: 30,
+		height: 30,
+		x: 0,
+		y: 0,
+		fill: '#252525',
+		strokeWeight: 1,
+		on: false,
+		clicked: false
+	};
+
 	// Offscreen buffer and relevant info
 	var buffers = {
 		colorBuffer: null,
@@ -169,6 +181,7 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 	// Helper functions section
 	
 	function drawGrid() {
+		blendMode(REPLACE);
 	    rectMode(CORNER);
 	    noFill();
 		strokeWeight(.5);
@@ -180,6 +193,19 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 			}
 		}
 		
+	}
+	
+	function resetPlotArea() {
+		blendMode(REPLACE);
+	    rectMode(CORNERS);
+	    fill(255, 255, 255);
+		strokeWeight(1);
+		stroke(255, 255, 255);
+		rect(plotX1, plotY1, plotX2 - gridWidth, plotY2);
+		rect(plotX2 - gridWidth, plotY1, plotX2, yLegend - gridWidth);
+		drawGrid();
+		stroke(169, 169, 169);
+		line(xLegend, yLegend, xLegend, yLegend + gridWidth);
 	}
 	
 	function drawChartText() {
@@ -300,7 +326,40 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 		blendMode(BLEND);
 
 	}
+
+	// Draw highlight rectangle (for user study purpose only)
+	function drawHighlightRect(strokeColor) {
+		blendMode(REPLACE);
+		noFill();
+		stroke(strokeColor);
+		strokeWeight(highlightRect.strokeWeight);
+		rectMode(CENTER);
+		rect(highlightRect.x, highlightRect.y, highlightRect.width, highlightRect.height);
+	}
 	
+	function setHighlightRectCenter(x, y) {
+		var xOffset = highlightRect.width/2;
+		var yOffset = highlightRect.height/2;
+		// set valid x value for center of highlightRect
+		if (x < (plotX1 + xOffset)) {
+			highlightRect.x = plotX1 + xOffset;
+		} else if (x > (plotX2 - gridWidth - xOffset) && y > (yLegend - gridWidth - yOffset)) {
+			highlightRect.x = plotX2 - gridWidth - xOffset;
+		} else if (x > (plotX2 - yOffset)) {
+			highlightRect.x = plotX2 - xOffset;
+		} else {
+			highlightRect.x = x;
+		}
+		// set valid y value for center of highlightRect
+		if (y < (plotY1 + yOffset)) {
+			hightlightRect.y = plotY1 + yOffset;
+		} else if (y > (plotY2 - yOffset)) {
+			highlightRect.y = plotY2 - yOffset;
+		} else {
+			highlightRect.y = y;
+		}
+	}
+
 	function drawSlider() {
 		var pointsPerRow = useAttr.length * (useAttr.length - 1) / 2;
 		// Max number of rows drawn per frame to maintain 30 frames/sec frame rate
@@ -630,6 +689,7 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 	
 	// Loads appropriate buffers after brushing enabled/disenabled
 	function brushRedraw() {
+		resetPlotArea();
 		if (brushed === 0) {
 			image(buffers.colorBuffer, 0, 0, canvasWidth * disp, canvasHeight * disp, 0, 0, canvasWidth, canvasHeight);
 		} else {
@@ -705,9 +765,13 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 		
 		if (typeof params.scaleAmount !== "undefined") {
 			scaleAmount = +(params.scaleAmount);
-			gridWidth = gridWidth * scaleAmount;
-			pointEncode.size = pointEncode.size * scaleAmount;
-			pointEncode.strokeWeight = pointEncode.strokeWeight * scaleAmount;
+			majorPad *= scaleAmount;
+			gridWidth *= scaleAmount;
+			tickLen *= scaleAmount;
+			tickLabelDist *= scaleAmount;
+			subtitleDist *= scaleAmount;
+			pointEncode.size *= scaleAmount;
+			pointEncode.strokeWeight *= scaleAmount;
 			for (var size in textSizes) {
 				textSizes[size] *= scaleAmount;
 			}
@@ -718,7 +782,12 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 		var canvas = createCanvas(canvasWidth, canvasHeight);
 		background(255);
 		rowCount = source.getRowCount();
-		
+
+		// Turn on draggable highlight rectangle for user study purposes
+		if (_highlight !== "undefined" && _highlight.toLowerCase() === "true") {
+			highlightRect.on = _highlight;
+		}
+
 		// if given, set parent div
 		if (div_name !== "undefined") {
 			canvas.parent(div_name);
@@ -780,7 +849,12 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 	
 		xLegend = plotX2 - gridWidth;
 		yLegend = plotY1 + Math.min(useAttr.length - 2, 3) * gridWidth;
-		
+
+		if (highlightRect.on) {
+			highlightRect.x = xLegend - gridWidth/2 + highlightRect.width/2;
+			highlightRect.y = yLegend + highlightRect.height/2;
+		}
+
 		elementPad = gridWidth * 0.1;
 		textPad = gridWidth * 0.03;
 		elementHeight = gridWidth * 0.12;
@@ -842,16 +916,25 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 	}
 	
 	main.draw = function() {
+		// Frame rate tracking info: can delete
 		main.frameRate.n += 1;
 		main.frameRate.runningTtl += frameRate();
+		
+		// Fix cursor symbol as arrow
+		cursor(ARROW);
+		
 		plotData(isAnimate);
 		if (rectangles.length >= 1) {
 			drawRects("rgba(255, 255, 255, 1)")
 			drawRects(rectColor);			
 		}
+		
+		if (highlightRect.on) {
+			drawHighlightRect(highlightRect.fill);
+		}
 	}
 	
-	main.mousePressed = function() {
+	main.mouseClicked = function() {
 		// get timestamp for event tracking
 		var time = millis();
 		
@@ -884,6 +967,9 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 					brushed = selected.length;
 					brushRedraw();
 					drawLegend();
+					if (highlightRect.on) {
+						drawHighlightRect(highlightRect.fill);
+					}
 					break;
 				}
 			}
@@ -903,9 +989,75 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 				}
 				drawPauseButton();
 		}
+
+		// prevent default
+		return false;
+	}
+
+	// Below mouse events are mainly used for highlight box for user study purpose only
+	
+	main.mousePressed = function() {
 		
+		if (!highlightRect.on) {
+			return false;
+		}
+		
+		var x = mouseX;
+		var y = mouseY;
+		
+		// see if user clicked in highlight box
+		if ((Math.abs(x - highlightRect.x) < highlightRect.width/2)
+			&& (Math.abs(y - highlightRect.y) < highlightRect.height/2)) {
+				highlightRect.clicked = true;
+				brushRedraw();
+		}
 	}
 	
+	main.mouseReleased = function() {
+		
+		if (!highlightRect.on) {
+			return false;
+		}
+		
+		var time = millis();
+		var x = mouseX;
+		var y = mouseY;
+		
+		if (highlightRect.clicked) {
+			setHighlightRectCenter(x, y);
+			drawHighlightRect(highlightRect.fill);
+			highlightRect.clicked = false;
+			main.highlightRect.x = highlightRect.x;
+			main.highlightRect.y = highlightRect.y;
+		}
+		
+		// prevent default
+		return false;
+	}
+	
+	main.mouseMoved = function() {
+		if (highlightRect.on && highlightRect.clicked) {
+			brushRedraw();
+			setHighlightRectCenter(mouseX, mouseY);
+			drawHighlightRect(highlightRect.fill);
+		}
+		
+		// prevent default
+		return false;
+	}
+	
+	main.mouseDragged = function() {
+		
+		if (highlightRect.on && highlightRect.clicked) {
+			brushRedraw();
+			setHighlightRectCenter(mouseX, mouseY);
+			drawHighlightRect(highlightRect.fill);
+		}
+
+		// prevent default: see http://p5js.org/reference/#/p5/mouseDragged
+		return false;
+	}
+
 	// Session tracking: array of event objects of form:
 	// {
 	//  event: one of the following: pause, play, brush, unbrush, rows per frame
@@ -914,6 +1066,12 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 	//           for speed, change in animate num
 	// }
 	main.session = [];
+	
+	// Highlight rectangle logging information
+	main.highlightRect = {
+		x: 0,
+		y: 0
+	};
 
 	main.frameRate = {
 		n: 0,

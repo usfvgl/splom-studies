@@ -55,7 +55,7 @@
 		
 	];
 	
-	var chart = multi_scatter(dataSource, attr, category, animate, "filled_normal", chartTitle, rects, "chart");
+	var chart = multi_scatter(dataSource, attr, category, animate, "filled_normal", chartTitle, rects, "false", "chart");
 	var slider;
 	
 	function preload() {
@@ -70,8 +70,24 @@
 		chart.draw();
 	}
 	
+	function mouseClicked() {
+		chart.mouseClicked();
+	}
+	
 	function mousePressed() {
 		chart.mousePressed();
+	}
+
+	function mouseReleased() {
+		chart.mouseReleased();
+	}
+
+	function mouseMoved() {
+		chart.mouseMoved();
+	}
+	
+	function mouseDragged() {
+		chart.mouseDragged();
 	}
 	
 	(function() {
@@ -86,8 +102,6 @@
 		function validate() {
 			if(data.letter) {
 				experimentr.endTimer('animated');
-				//data.session = chart.session;
-				//console.log(chart.session);
 				experimentr.addData(data);
 				experimentr.release();
 			}
