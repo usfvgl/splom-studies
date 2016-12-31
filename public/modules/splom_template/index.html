@@ -1,0 +1,108 @@
+<script language="javascript" type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.19/p5.js"></script>
+<!-- uncomment lines below to include extra p5 libraries -->
+<script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.4/addons/p5.dom.js"></script>
+<!--<script language="javascript" src="libraries/p5.sound.js"></script>-->
+<script language="javascript" type="text/javascript" src="../multi_scatter.js"></script>
+<!-- this line removes any default padding and style. you might only need one of these values set. -->
+<style> body {padding: 0; margin: 0;} </style>
+
+<div id="splom_template">
+	<div id="question"></div>
+	<div id="chart"></div>
+</div>
+
+<script language="javascript" type="text/javascript">
+	
+	var dataSource = "../data/synthetic-4-1-1.csv";
+	var attr = {
+		all: ["v","w","x","y","z","class"],
+		use: [0, 1, 2, 3, 4]
+	};
+	var category = {
+		name: "class",
+		index: 5,
+		values: ["A", "B", "C", "D"]
+	};
+	
+	var chartTitle = "";
+	
+	// Information that will be stored in server per module per user
+	var storeInfo = {
+		questionId: "0001A",
+		questionText: "Using the box next to the legend in the lower right corner, select a region within a cell that has the most overlapping points and contains only one class.",
+		// Encoding technique used for plotting points. technique needs to be one of the following Strings:
+		// filled_normal:  filled cirlces without color blending (default)
+		// filled_blended: filled circles with color blending
+		// alpha_blended:  filled circles with alpha blending
+		// open:           unfilled circles with color outline
+		technique: "alpha_blended",
+		animate: {
+			isAnimate: false
+		}
+	};
+
+	storeInfo.dataset = dataSource;
+	document.getElementById('question').innerHTML = storeInfo.questionText;
+
+	// p5 object and functions
+	var chart = multi_scatter(dataSource, attr, category, storeInfo.animate, storeInfo.technique, chartTitle, null, "true", "chart");
+
+	function preload() {
+		chart.preload();
+	}
+	
+	function setup() {
+		chart.setup();
+	}
+	
+	function draw() {
+		chart.draw();
+	}
+	
+	function mouseClicked() {
+		chart.mouseClicked();
+	}
+	
+	function mousePressed() {
+		chart.mousePressed();
+	}
+
+	function mouseReleased() {
+		chart.mouseReleased();
+		validate();
+	}
+
+	function mouseMoved() {
+		chart.mouseMoved();
+	}
+	
+	function mouseDragged() {
+		chart.mouseDragged();
+	}
+	
+	// experimentr function
+	function validate() {
+		if(storeInfo.firstHighlightRect === undefined) {
+			storeInfo.firstHighlightRect = {};
+			storeInfo.firstHighlightRect.x = chart.highlightRect.x;
+			storeInfo.firstHighlightRect.y = chart.highlightRect.y;
+			experimentr.release();
+		} else {
+			storeInfo.lastHighlightRect = {};
+			storeInfo.lastHighlightRect.x = chart.highlightRect.x;
+			storeInfo.lastHighlightRect.y = chart.highlightRect.y;
+		}
+			console.log(storeInfo);
+	}
+	
+	(function() {
+
+		experimentr.startTimer(storeInfo.questionId);
+		experimentr.onNext(function() {
+			experimentr.endTimer(storeInfo.questionId);
+			experimentr.addData(storeInfo);
+		});
+
+	}());
+	
+</script>

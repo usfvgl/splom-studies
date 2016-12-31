@@ -1,3 +1,4 @@
+//TODO remove _rectangles and all _rectangles-related references
 function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _chartTitle, _rectangles, _highlight, div_name) {
 
 	var params;
@@ -33,7 +34,7 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 	if (isAnimate && (typeof _animate.animateNum !== "undefined")) {
 		animateNum = _animate.animateNum;
 	}
-	var initDraw = animate.initDraw;
+	var initDraw = _animate.initDraw;
 	
 	var maxData = [];
 	var minData = [];
@@ -41,7 +42,7 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 	var rowCount;
 
 	// formatting plot area
-	var majorPad = 55;
+	var majorPad = 30;
 	var gridWidth = 125;
 	var tickLen = 3;
 	var tickLabelDist = tickLen * 1.5;
