@@ -353,7 +353,7 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 		}
 		// set valid y value for center of highlightRect
 		if (y < (plotY1 + yOffset)) {
-			hightlightRect.y = plotY1 + yOffset;
+			highlightRect.y = plotY1 + yOffset;
 		} else if (y > (plotY2 - yOffset)) {
 			highlightRect.y = plotY2 - yOffset;
 		} else {
@@ -997,6 +997,8 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 
 	// Below mouse events are mainly used for highlight box for user study purpose only
 	
+	// Function return value indicates whether highlightRect has been clicked by user
+	// to be moved
 	main.mousePressed = function() {
 		
 		if (!highlightRect.on) {
@@ -1011,12 +1013,18 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 			&& (Math.abs(y - highlightRect.y) < highlightRect.height/2)) {
 				highlightRect.clicked = true;
 				brushRedraw();
+				return true;
+		} else {
+			return false;
 		}
+		
 	}
 	
+	// Function return value indicates whether highlightRect has been placed by user,
+	// true only if user has previously clicked on highlightRect
 	main.mouseReleased = function() {
 		
-		if (!highlightRect.on) {
+		if (!highlightRect.on || !highlightRect.clicked) {
 			return false;
 		}
 		
@@ -1024,16 +1032,14 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 		var x = mouseX;
 		var y = mouseY;
 		
-		if (highlightRect.clicked) {
-			setHighlightRectCenter(x, y);
-			drawHighlightRect(highlightRect.fill);
-			highlightRect.clicked = false;
-			main.highlightRect.x = highlightRect.x;
-			main.highlightRect.y = highlightRect.y;
-		}
+		setHighlightRectCenter(x, y);
+		drawHighlightRect(highlightRect.fill);
+		highlightRect.clicked = false;
+		// Adjust position to data coordinate system
+		main.highlightRect.x = highlightRect.x - plotX1;
+		main.highlightRect.y = highlightRect.y - plotY1;
+		return true;
 		
-		// prevent default
-		return false;
 	}
 	
 	main.mouseMoved = function() {
@@ -1042,21 +1048,14 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 			setHighlightRectCenter(mouseX, mouseY);
 			drawHighlightRect(highlightRect.fill);
 		}
-		
-		// prevent default
-		return false;
 	}
 	
 	main.mouseDragged = function() {
-		
 		if (highlightRect.on && highlightRect.clicked) {
 			brushRedraw();
 			setHighlightRectCenter(mouseX, mouseY);
 			drawHighlightRect(highlightRect.fill);
 		}
-
-		// prevent default: see http://p5js.org/reference/#/p5/mouseDragged
-		return false;
 	}
 
 	// Session tracking: array of event objects of form:
