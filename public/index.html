@@ -13,15 +13,41 @@
 <body></body>
 
 <script>
-experimentr.sequence([
+/*
+ * Compute a random integer i within a given range,
+ * where lower <= i < upper
+*/
+function getRandomInteger(lower, upper) {
+	console.assert(arguments.length === 2, "getRandomInteger() requires lower and upper parameters.");
+	return Math.floor(Math.random() * (upper - lower)) + lower;
+}
+
+/*
+ * Put all modules involved in experiment between initial consent module and
+ * ending debrief module.
+ */
+var modules = [
   'modules/consent/',
-  // 'modules/static/',
-  // 'modules/open_circles/',
-  //'modules/alpha_blend/',
-  // 'modules/color_blend/',
-  //'modules/animated/',
-  'modules/splom_template',
+  'modules/splom_template/',
+  'modules/animated/',
   'modules/debrief/'
-]).start();
+];
+
+// Randomize order of test modules, keeping consent as first and debrief as last
+var numModules = modules.length;
+var randomIndex;
+for (var i = 1; i < numModules - 2; i++) {
+	randomIndex = getRandomInteger(i, numModules - 1);
+	var temp = modules[i];
+	modules[i] = modules[randomIndex];
+	modules[randomIndex] = temp;
+}
+
+// Add randomized module order to session tracking;
+var storeInfo = {};
+storeInfo['module_order'] = modules.join().replace(/modules\//g,"");
+experimentr.addData(storeInfo);
+
+experimentr.sequence(modules).start();
 
 </script>
