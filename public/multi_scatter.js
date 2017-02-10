@@ -360,77 +360,6 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 			highlightRect.y = y;
 		}
 	}
-
-	function drawSlider() {
-		var pointsPerRow = useAttr.length * (useAttr.length - 1) / 2;
-		// Max number of rows drawn per frame to maintain 30 frames/sec frame rate
-		var maxVal = Math.floor(maxPointsPerFrame / pointsPerRow);
-		slider.slider = createSlider(1, maxVal, animateNum, 1);
-		slider.slider.position(slider.x, slider.y);
-		slider.slider.style('width', slider.width + 'px');
-		slider.slider.changed(onSliderChange);
-	}
-	
-	function onSliderChange() {
-		// session logging info
-		var time = millis();
-		var prevNum = animateNum;
-		// update animateNum from slider
-		animateNum = slider.slider.value();
-		drawSliderTitle();
-		//update session logging info
-		main.session.push(getEventEntry("rows per frame", time, animateNum - prevNum));
-	}
-	
-	function drawSliderTitle() {
-		// clear canvas
-		var textHeight = gridWidth * 0.1;
-		rectMode(CORNER);
-		fill(255, 255, 255);
-		stroke(255, 255, 255);
-		rect(slider.textX, slider.textY - textHeight/2, gridWidth * 1.1, textHeight);
-
-		textSize(textSizes.loadBar);
-		fill(loadBar.fill);
-		noStroke();
-		textAlign(LEFT, CENTER);
-		text("Rows animated per frame: " + slider.slider.value(), slider.textX, slider.textY);
-	}
-	
-	function drawPauseButton() {
-		
-		// clear canvas
-		rectMode(CENTER);
-		fill(255, 255, 255);
-		stroke(255, 255, 255);
-		rect(pauseButton.x, pauseButton.y, pauseButton.width, pauseButton.height);
-		
-		var playFill;
-		var pauseFill;
-
-		if (paused) {
-			playFill = pauseButton.deselectedFill;
-			pauseFill = pauseButton.selectedFill;
-		} else {
-			playFill = pauseButton.selectedFill;
-			pauseFill = pauseButton.deselectedFill;
-		}
-		
-		// draw triangle
-		fill(playFill);
-		stroke(playFill);
-		triangle(pauseButton.x, pauseButton.y, 
-			pauseButton.x - pauseButton.width/2, pauseButton.y - pauseButton.height/2,
-			pauseButton.x - pauseButton.width/2, pauseButton.y + pauseButton.height/2
-		);
-		
-		// draw pause
-		fill(pauseFill);
-		stroke(pauseFill);
-		rectMode(CENTER);
-		rect(pauseButton.x + pauseButton.width/6, pauseButton.y, pauseButton.width/6, pauseButton.height);
-		rect(pauseButton.x + pauseButton.width/12 * 5, pauseButton.y, pauseButton.width/6, pauseButton.height);
-	}
 	
 	function drawLoadBar(percentDrawn) {
 		
@@ -903,10 +832,6 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 				drawLoadBar(0);				
 			}
 
-			//TODO
-			//drawPauseButton();
-			//drawSlider();
-			//drawSliderTitle();
 		}
 	
 		drawGrid();
@@ -933,66 +858,6 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 		if (highlightRect.on) {
 			drawHighlightRect(highlightRect.fill);
 		}
-	}
-	
-	main.mouseClicked = function() {
-		// get timestamp for event tracking
-		var time = millis();
-		
-		// Check if user clicked on legend for brushing
-		if (mouseX >= (keyCenters[0][0] - keySize/2) && mouseX <= (keyCenters[0][0] + keySize/2)) {
-			for (var i = 0; i < classes.length; i++) {
-				if (mouseY >= (keyCenters[i][1] - keySize/2) && mouseY <= (keyCenters[i][1] + keySize/2)) {
-					var clickedClass = classes[i];
-					var classIndexInSelected = selected.indexOf(clickedClass);
-					
-					if (classIndexInSelected < 0) {
-						if (brushed === classes.length - 1) {
-							// selecting the only un-selected class: essentially un-brushing
-							selected = [];
-							brushed = 0;
-						} else {
-							// selected clicked class
-							selected.push(clickedClass);
-							main.session.push(getEventEntry("brush", time, clickedClass));
-						}
-					} else {
-						// de-selected clicked class
-						main.session.push(getEventEntry("unbrush", time, clickedClass));
-						for (var i = classIndexInSelected; i < brushed - 1; i++) {
-							selected[i] = selected[i + 1];
-						}
-						selected.pop();
-					}
-					
-					brushed = selected.length;
-					brushRedraw();
-					drawLegend();
-					if (highlightRect.on) {
-						drawHighlightRect(highlightRect.fill);
-					}
-					break;
-				}
-			}
-		}
-		
-		// Check if user clicked on play/pause buttons
-		if (mouseX >= (pauseButton.x - pauseButton.width/2) && mouseY >= (pauseButton.y - pauseButton.height/2)
-			&& mouseY <= (pauseButton.y + pauseButton.height/2)) {
-				if (mouseX <= pauseButton.x && paused) {
-					main.session.push(getEventEntry("play", time, ""));
-					paused = false;
-					loop();
-				} else if (mouseX > pauseButton.x && mouseX <= (pauseButton.x + pauseButton.width/2) && !paused) {
-					main.session.push(getEventEntry("pause", time, ""));
-					paused = true;
-					noLoop();
-				}
-				drawPauseButton();
-		}
-
-		// prevent default
-		return false;
 	}
 
 	// Below mouse events are mainly used for highlight box for user study purpose only

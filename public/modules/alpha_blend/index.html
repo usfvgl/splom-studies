@@ -5,10 +5,10 @@
 <script language="javascript" type="text/javascript" src="../multi_scatter.js"></script>
 <!-- this line removes any default padding and style. you might only need one of these values set. -->
 <style> body {padding: 0; margin: 0;} </style>
-
-<div id="alpha_blend">
+<!-- TODO update div id to match module name-->
+<div id="alpha_blended">
+	<div id="question"></div>
 	<div id="chart"></div>
-	<div id="question"> Drag the box next to the legend to one of the matrix grids.</div>
 </div>
 
 <script language="javascript" type="text/javascript">
@@ -23,34 +23,35 @@
 		index: 5,
 		values: ["A", "B", "C", "D"]
 	};
+	
+	var chartTitle = "";
 	var animate = {
-		isAnimate: false
-	};
-	var chartTitle = "Static Scatterplot Matrix with Alpha Blending and Draggable Box";
+			isAnimate: false
+		};
+	
+	// Information that will be stored in server per module per user
+	// TODO update tag, which will be used to uniquely-identify each module and its associated data
+	// TODO tag should be a shortened version of the module name?
+	var tag = "alpha";
+	
+	// Object to hold all data associated with this module. Each property of the object will be
+	// added to the main object for each user. Therefore, the property name needs to be unique
+	// to the module, which is possible with the module-specific tag
+	var storeInfo = {};
+	storeInfo[tag + '_question'] = "Using the box next to the legend in the lower right corner, select a region within a cell that has the most overlapping points and contains only one class.";
+	// Encoding technique used for plotting points. technique needs to be one of the following Strings:
+	// filled_normal:  filled cirlces without color blending (default)
+	// filled_blended: filled circles with color blending
+	// alpha_blended:  filled circles with alpha blending
+	// open:           unfilled circles with color outline
+	storeInfo[tag + '_technique'] = 'alpha_blended';
+	storeInfo[tag + '_animate'] = animate.isAnimate;
+	storeInfo[tag + '_dataset'] = dataSource;
+	document.getElementById('question').innerHTML = storeInfo[tag + '_question'];
 
-	var rects = [
-		{
-			x: 5,
-			y: 1,
-			xmin: 40,
-			ymin: 1,
-			xmax: 62,
-			ymax: 2.5
-		},
-		{
-			x: 10,
-			y: 7,
-			xmin: 0,
-			ymin: 1000,
-			xmax: 30,
-			ymax: 10000
-		},
-		
-	];
-	
-	var chart = multi_scatter(dataSource, attr, category, animate, "alpha_blended", chartTitle, rects, "true", "chart");
-	var slider;
-	
+	// p5 object and functions
+	var chart = multi_scatter(dataSource, attr, category, animate, storeInfo[tag + '_technique'], chartTitle, null, "true", "chart");
+
 	function preload() {
 		chart.preload();
 	}
@@ -63,46 +64,59 @@
 		chart.draw();
 	}
 	
-	function mouseClicked() {
-		chart.mouseClicked();
-	}
-	
 	function mousePressed() {
 		chart.mousePressed();
+		// prevent default: see p5 documentation
+		return false;
 	}
 
 	function mouseReleased() {
-		chart.mouseReleased();
+		
+		var timestamp = Date.now();
+		
+		// Only log time and highlightRect information when user released mouse
+		// after previously clicking on it. See multi_scatter.mouseReleased()
+		if(chart.mouseReleased()) {
+			storeInfo[tag + '_rectX'] = chart.highlightRect.x;
+			storeInfo[tag + '_rectY'] = chart.highlightRect.y;
+			if(storeInfo[tag + '_firstSelectTime'] === undefined) {
+				storeInfo[tag + '_firstSelectTime'] = timestamp;
+				experimentr.release();
+			} else {
+				storeInfo[tag + '_lastSelectTime'] = timestamp;
+			}
+		}
+		
+		// prevent default: see p5 documentation
+		return false;
 	}
 
 	function mouseMoved() {
 		chart.mouseMoved();
+		// prevent default: see p5 documentation
+		return false;
 	}
 	
 	function mouseDragged() {
 		chart.mouseDragged();
+		// prevent default: see http://p5js.org/reference/#/p5/mouseDragged
+		return false;
 	}
-	
+
 	(function() {
-		var data = {};
 
-		experimentr.startTimer('alpha_blending');
-
-		d3.select("#chart")
-		.on('mouseup', function() { 
-			data.highlightRect = chart.highlightRect;
-			console.log(data.highlightRect);
-			validate();
+		experimentr.startTimer(tag);
+		experimentr.onNext(function() {
+			experimentr.endTimer(tag);
+			// If user only moved highlightRect once, _lastSelectTime would
+			// not be in storeInfo object. Set value to 0 to indicate
+			// user never moved highlightRect more than once.
+			if(storeInfo[tag + '_lastSelectTime'] === undefined) {
+				storeInfo[tag + '_lastSelectTime'] = 0;
+			}
+			experimentr.addData(storeInfo);
 		});
 
-		function validate() {
-			console.log(data.highlightRect);
-			if(data.highlightRect.x > 0 && data.highlightRect.y > 0) {
-				experimentr.endTimer('alpha_blending');
-				experimentr.addData(data);
-				experimentr.release();
-			}
-		}
 	}());
 	
 </script>
