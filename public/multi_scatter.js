@@ -42,7 +42,7 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 	var rowCount;
 
 	// formatting plot area
-	var majorPad = 30;
+	var majorPad = 50;
 	var gridWidth = 125;
 	var tickLen = 3;
 	var tickLabelDist = tickLen * 1.5;
@@ -73,6 +73,20 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 	var brushed = 0;
 	var selected = [];
 	var brushedColor = "rgb(217, 217, 217)";
+
+	// Color for x and y axis label 
+	var axisLabelTextColor = {
+		highlight: "rgb(0, 0, 0)",		// when user mouse over a square in the matrix
+		regular: "rgb(169, 169, 169)",
+	};
+	
+	// Tracking info for highlighted axis label
+	var axisLabelHighlight = {
+		x: -1,
+		y: -1,
+		xPos: [],
+		yPos: []
+	};
 
 	// Encoding used for plotting points. _encoding needs to be one of the following Strings:
 	// filled_normal:  filled cirlces without color blending (default)
@@ -164,6 +178,8 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 		height: 30,
 		x: 0,
 		y: 0,
+		xAttr: 0,
+		yAttr: 0,
 		fill: '#252525',
 		strokeWeight: 1,
 		on: false,
@@ -219,6 +235,45 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 
 	}
 
+	function drawXAxisSubtitle(attrNum, highlight) {
+		push();
+		var textXPosition = axisLabelHighlight.xPos[attrNum];
+		textSize(textSizes.axisTitle);
+		strokeWeight(0.25);
+		stroke(axisLabelTextColor.highlight);
+		fill(axisLabelTextColor.highlight);
+		textAlign(CENTER, CENTER);
+		if (!highlight) {
+			stroke(255, 255, 255);
+			fill(255, 255, 255);
+			text(attr[useAttr[attrNum]], textXPosition, plotY1 - subtitleDist);
+			fill(axisLabelTextColor.regular);
+			stroke(axisLabelTextColor.regular);
+		}
+		text(attr[useAttr[attrNum]], textXPosition, plotY1 - subtitleDist);
+		pop();
+	}
+	
+	function drawYAxisSubtitle(attrNum, highlight) {
+		push();
+		var textYPosition = axisLabelHighlight.yPos[attrNum];
+		textSize(textSizes.axisTitle);
+		strokeWeight(0.25);
+		stroke(axisLabelTextColor.highlight);
+		fill(axisLabelTextColor.highlight);
+		rotate(-PI/2);
+		textAlign(CENTER, CENTER);
+		if (!highlight) {
+			stroke(255, 255, 255);
+			fill(255, 255, 255);
+			text(attr[useAttr[attrNum]], -textYPosition, plotX1 - 1.5 * subtitleDist);
+			fill(axisLabelTextColor.regular);
+			stroke(axisLabelTextColor.regular);
+		}
+		text(attr[useAttr[attrNum]], -textYPosition, plotX1 - 1.5 * subtitleDist);
+		pop();
+	}
+
 	function drawAxisLabels() {
 		fill(169, 169, 169);
 		stroke(169, 169, 169);
@@ -255,11 +310,8 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 				
 					// draw axis subtitle
 					if (i === 1) {
-						push();
-						textSize(textSizes.axisTitle);
-						stroke(128, 128, 128);
-						text(attr[useAttr[count]], x, plotY1 - subtitleDist);
-						pop();
+						axisLabelHighlight.xPos[count] = x;
+						drawXAxisSubtitle(count, false);
 					}
 				
 					stroke(0,0,0);
@@ -276,13 +328,8 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 				
 					// draw axis subtitle
 					if (i === 1) {
-						push();
-						textSize(textSizes.axisTitle);
-						stroke(128, 128, 128);
-						rotate(-PI/2);
-						textAlign(CENTER, CENTER);
-						text(attr[useAttr[count]], -y, plotX1 - 1.5 * subtitleDist);
-						pop();
+						axisLabelHighlight.yPos[count] = y;
+						drawYAxisSubtitle(count, false);
 					}
 				
 					stroke(0,0,0);
@@ -900,9 +947,15 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 		setHighlightRectCenter(x, y);
 		drawHighlightRect(highlightRect.fill);
 		highlightRect.clicked = false;
-		// Adjust position to data coordinate system
-		main.highlightRect.x = highlightRect.x - plotX1;
-		main.highlightRect.y = highlightRect.y - plotY1;
+		
+		// Adjust to actual x and y values and store in highlightRect
+		var col = Math.floor((x - plotX1)/gridWidth);
+		var xAttr = useAttr.length - 1 - col;
+		var yAttr = Math.floor((y - plotY1)/gridWidth);
+		main.highlightRect.x = map(x, gridX[col] + labelPad, gridX[col] + gridWidth - labelPad, minData[xAttr], maxData[xAttr]);
+		main.highlightRect.y = map(y, gridY[yAttr] + gridWidth - labelPad, gridY[yAttr] + labelPad, minData[yAttr], maxData[yAttr]);
+		main.highlightRect.xAttr = attr[useAttr[xAttr]];
+		main.highlightRect.yAttr = attr[useAttr[yAttr]];
 		return true;
 		
 	}
@@ -913,14 +966,40 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 			setHighlightRectCenter(mouseX, mouseY);
 			drawHighlightRect(highlightRect.fill);
 		}
+		
+		// axis label highlighting
+		var xAttrRev = Math.floor((mouseX - plotX1)/gridWidth);
+		var xAttr = useAttr.length - 1 - xAttrRev;
+		var yAttr = Math.floor((mouseY - plotY1)/gridWidth);
+		
+		// mouseMoved gets called oddly before screen loads.
+		// the above will therefore yield NaN
+		// exit callback if that's the case
+		if (xAttrRev !== xAttrRev || xAttr !== xAttr || yAttr !== yAttr) {
+			return;
+		}
+		
+		// Un-highlight axis labels
+		if (axisLabelHighlight.x !== -1 && axisLabelHighlight.y !== -1 && (axisLabelHighlight.x !== xAttr || axisLabelHighlight.y !== yAttr)) {
+			var currxAttrRev = useAttr.length - 1 - axisLabelHighlight.x;
+			drawXAxisSubtitle(axisLabelHighlight.x, false);
+			drawYAxisSubtitle(axisLabelHighlight.y, false);
+		}
+		
+		// If valid mouse position, highlight axis labels
+		if (xAttr < 0 || yAttr < 0 || (xAttr > useAttr.length - 1) || (yAttr > useAttr.length - 1) || xAttr <= yAttr) {
+			axisLabelHighlight.x = -1;
+			axisLabelHighlight.y = -1;
+		} else if (axisLabelHighlight.x !== xAttr || axisLabelHighlight.y !== yAttr) {
+			axisLabelHighlight.x = xAttr;
+			axisLabelHighlight.y = yAttr;
+			drawXAxisSubtitle(xAttr, true);
+			drawYAxisSubtitle(yAttr, true);
+		}
 	}
 	
 	main.mouseDragged = function() {
-		if (highlightRect.on && highlightRect.clicked) {
-			brushRedraw();
-			setHighlightRectCenter(mouseX, mouseY);
-			drawHighlightRect(highlightRect.fill);
-		}
+		mouseMoved();
 	}
 
 	// Session tracking: array of event objects of form:
