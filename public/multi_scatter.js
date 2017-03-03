@@ -292,7 +292,7 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 			
 				var label = labels[i];
 				if (label < 10) {
-					label = label.toFixed(1);
+					label = label.toFixed(0);
 				}
 				var labelText = label;
 			
@@ -952,10 +952,25 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 		var col = Math.floor((x - plotX1)/gridWidth);
 		var xAttr = useAttr.length - 1 - col;
 		var yAttr = Math.floor((y - plotY1)/gridWidth);
-		main.highlightRect.x = map(x, gridX[col] + labelPad, gridX[col] + gridWidth - labelPad, minData[xAttr], maxData[xAttr]);
-		main.highlightRect.y = map(y, gridY[yAttr] + gridWidth - labelPad, gridY[yAttr] + labelPad, minData[yAttr], maxData[yAttr]);
+		
+		// If rect not in valid grid, return false
+		if (xAttr <= yAttr) {
+			return false;
+		}
+		
+		var xLow = x - highlightRect.width/2;
+		var xHigh = x + highlightRect.width/2;
+		var yLow = y + highlightRect.height/2;
+		var yHigh = y - highlightRect.height/2;
+		main.highlightRect.xLow = map(xLow, gridX[col] + labelPad, gridX[col] + gridWidth - labelPad, minData[xAttr], maxData[xAttr]);
+		main.highlightRect.xHigh = map(xHigh, gridX[col] + labelPad, gridX[col] + gridWidth - labelPad, minData[xAttr], maxData[xAttr]);
+		main.highlightRect.yLow = map(yLow, gridY[yAttr] + gridWidth - labelPad, gridY[yAttr] + labelPad, minData[yAttr], maxData[yAttr]);
+		main.highlightRect.yHigh = map(yHigh, gridY[yAttr] + gridWidth - labelPad, gridY[yAttr] + labelPad, minData[yAttr], maxData[yAttr]);
 		main.highlightRect.xAttr = attr[useAttr[xAttr]];
 		main.highlightRect.yAttr = attr[useAttr[yAttr]];
+		var selectedInfo = main.getDataInRect();
+		main.highlightRect.numPoints = selectedInfo.numPoints;
+		main.highlightRect.numClasses = selectedInfo.numClasses;
 		return true;
 		
 	}
@@ -1011,25 +1026,48 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 	// }
 	main.session = [];
 	
-	// Highlight rectangle logging information
-	main.highlightRect = {
-		x: 0,
-		y: 0
-	};
+	// Highlight rectangle logging information containing actual x/y values
+	// xLow, yLow, xHigh, yHigh will be added/updated in mouseReleased callback
+	main.highlightRect = {};
 
 	main.frameRate = {
 		n: 0,
 		runningTtl: 0
 	};
-
-	main.getAvgFrameRate = function(seconds) {
-		main.frameRate.n = 0;
-		main.frameRate.runningTtl = 0;
-		setTimeout(function(){
-			var thisN = main.frameRate.n;
-			var thisTtl = main.frameRate.runningTtl;
-			console.log("Avg. frame rate in the last " + seconds + " seconds: " + Math.round(thisTtl/thisN));
-		}, 1000 * seconds);
+	
+	main.getDataInRect = function() {
+		if (main.highlightRect.xLow === undefined) {
+			return 0;
+		} else {
+			var xCol = attr.indexOf(main.highlightRect.xAttr);
+			var yCol = attr.indexOf(main.highlightRect.yAttr);
+			var x, y;
+			var cat;
+			var count = 0;
+			var counts = {};
+			var classCount = 0;
+			
+			for (var row = 0; row < rowCount; row++) {
+				x = source.getNum(row, xCol);
+				y = source.getNum(row, yCol);
+				if (x > main.highlightRect.xLow && x < main.highlightRect.xHigh
+					&& y > main.highlightRect.yLow && y < main.highlightRect.yHigh) {
+						cat = source.getString(row, category.name);
+						count++;
+						if (counts[cat] === undefined) {
+							counts[cat] = 1;
+							classCount++;
+						} else {
+							counts[cat]++;
+						}
+				}
+			}
+			
+			return {
+				numPoints: count,
+				numClasses: classCount
+			};
+		}
 	}
 	
 	return main;

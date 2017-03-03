@@ -6,15 +6,16 @@
 <!-- this line removes any default padding and style. you might only need one of these values set. -->
 <style> body {padding: 0; margin: 0;} </style>
 <!-- TODO update div id to match module name-->
-<div id="splom_template">
+<div id="section1-template">
 	<div id="question"></div>
 	<div id="chart"></div>
+	<div id="warning"></div>
 </div>
 
 <script language="javascript" type="text/javascript">
 	
 	// TODO update dataSource and related information
-	var dataSource = "../data/synthetic-4-1-1.csv";
+	var dataSource = "../data/section1-t.csv";
 	var attr = {
 		all: ["v","w","x","y","z","class"],
 		use: [0, 1, 2, 3, 4]
@@ -37,15 +38,17 @@
 	// Information that will be stored in server per module per user
 	// TODO update tag, which will be used to uniquely-identify each module and its associated data
 	// TODO tag should be a shortened version of the module name?
-	var tag = "temp";
+	var tag = "sec1-t";
 	
 	// Object to hold all data associated with this module. Each property of the object will be
 	// added to the main object for each user. Therefore, the property name needs to be unique
 	// to the module, which is possible with the module-specific tag
 	var storeInfo = {};
 	
-	// TODO update question
-	storeInfo[tag + '_question'] = "Drag the black rectangle to a region for variables x and y with the most circles.";
+	// TODO update the two variables in question
+	var var1 = "x";
+	var var2 = "y";
+	storeInfo[tag + '_question'] = "Drag the black rectangle to a region for variables " + var1 +" and " + var2 + " with the most circles.";
 
 	// Encoding technique used for plotting points. technique needs to be one of the following Strings:
 	// filled_normal:  filled cirlces without color blending (default)
@@ -81,21 +84,33 @@
 	function mouseReleased() {
 		
 		var timestamp = Date.now();
-		
+
 		// Only log time and highlightRect information when user released mouse
 		// after previously clicking on it. See multi_scatter.mouseReleased()
 		if(chart.mouseReleased()) {
-			storeInfo[tag + '_rectXLow'] = chart.highlightRect.xLow;
-			storeInfo[tag + '_rectXHigh'] = chart.highlightRect.xHigh;
-			storeInfo[tag + '_rectYLow'] = chart.highlightRect.yLow;
-			storeInfo[tag + '_rectYHigh'] = chart.highlightRect.yHigh;
-			storeInfo[tag + '_rectXAttr'] = chart.highlightRect.xAttr;
-			storeInfo[tag + '_rectYAttr'] = chart.highlightRect.yAttr;
-			if(storeInfo[tag + '_firstSelectTime'] === undefined) {
-				storeInfo[tag + '_firstSelectTime'] = timestamp;
+			var xAttr = chart.highlightRect.xAttr;
+			var yAttr = chart.highlightRect.yAttr;
+			if ((var1 === xAttr || var1 === yAttr) && (var2 === xAttr || var2 === yAttr)) {
+				storeInfo[tag + '_rectXLow'] = chart.highlightRect.xLow;
+				storeInfo[tag + '_rectXHigh'] = chart.highlightRect.xHigh;
+				storeInfo[tag + '_rectYLow'] = chart.highlightRect.yLow;
+				storeInfo[tag + '_rectYHigh'] = chart.highlightRect.yHigh;
+				storeInfo[tag + '_rectXAttr'] = xAttr;
+				storeInfo[tag + '_rectYAttr'] = yAttr;
+				storeInfo[tag + '_numPoints'] = chart.highlightRect.numPoints;
+				storeInfo[tag + '_numClasses'] = chart.highlightRect.numClasses;
+				if(storeInfo[tag + '_firstSelectTime'] === undefined) {
+					storeInfo[tag + '_firstSelectTime'] = timestamp;
+				} else {
+					storeInfo[tag + '_lastSelectTime'] = timestamp;
+				}
+				
+				// Enable "Next" button
+				document.getElementById('warning').innerHTML = "";
 				experimentr.release();
 			} else {
-				storeInfo[tag + '_lastSelectTime'] = timestamp;
+				document.getElementById('warning').innerHTML = "Warning: The \"Next\" button will only be enabled when the highlighted region is in the correct cell.";
+				experimentr.hold();
 			}
 		}
 		
@@ -126,6 +141,7 @@
 			if(storeInfo[tag + '_lastSelectTime'] === undefined) {
 				storeInfo[tag + '_lastSelectTime'] = 0;
 			}
+			console.log(storeInfo);	//TODO remove debugging
 			experimentr.addData(storeInfo);
 		});
 
