@@ -10,6 +10,26 @@ body {
   width: 960px;
 }
 
+span.blue {
+  color: #80b1d3;
+}
+
+span.gold {
+  color: #fdb462
+}
+
+span.purple {
+  color: #bc80bd
+}
+
+span.red {
+  color: #fb8072
+}
+
+span.teal {
+  color: #8dd3c7
+}
+
 #experimentr {
   margin: 4em auto 1em auto;
   width: 720px;
@@ -26,4 +46,24 @@ body {
 .placeholder {
   color: steelblue;
   font-weight: bold;
+}
+
+.center {
+	text-align: center;
+}
+
+.colorSq {
+	width: 150px;
+}
+
+.indentList {
+	margin-left: 50px;
+}
+
+.splom {
+	width: 700px;
+}
+
+.splot {
+	width: 250px;
 }

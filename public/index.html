@@ -27,7 +27,11 @@ function getRandomInteger(lower, upper) {
  * ending debrief module.
  */
 var modules = [
-  'modules/consent/',
+  'modules/splom_consent/',
+  'modules/splom_demographics/',
+  'modules/splot_comfort/',
+  'modules/splom_comfort/',
+  'modules/section1-intro/',
   'modules/section1-template/',
   'modules/section2-template/',
   'modules/debrief/'
@@ -36,7 +40,7 @@ var modules = [
 // Randomize order of test modules, keeping consent as first and debrief as last
 var numModules = modules.length;
 var randomIndex;
-for (var i = 1; i < numModules - 2; i++) {
+for (var i = 4; i < numModules - 2; i++) {
 	randomIndex = getRandomInteger(i, numModules - 1);
 	var temp = modules[i];
 	modules[i] = modules[randomIndex];

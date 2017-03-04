@@ -1,0 +1,63 @@
+<div id="splom_demographics">
+<p id="demoinstr">
+<strong>Demographics</strong>
+</p>
+
+<div id="age">What is your age?
+    <div id="ages">
+        <input type="radio" id="a1" name="age" value="24-"> 24 or Younger
+        <input type="radio" id="a2" name="age" value="25-44"> 25 to 44
+        <input type="radio" id="a3" name="age" value="45-64"> 45 to 64
+        <input type="radio" id="a4" name="age" value="65-74"> 65 to 74
+        <input type="radio" id="a5" name="age" value="75+"> 75 or Older
+    </div>
+</div>
+<br>
+<div id="sex">How would you describe yourself?
+    <div id="sexes">
+        <input type="radio" id="s1" name="sex" value="Male"> Male
+        <input type="radio" id="s2" name="sex" value="Female"> Female
+        <input type="radio" id="s3" name="sex" value="Other"> Other
+        <input type="text" id="s4" name="sex">
+    </div>
+</div>
+<br>
+<div id="degree">Please indicate your highest level of education:
+    <div id="degrees">
+        <input type="radio" id="d1" name="degree" value="No degree"> No Degree
+        <input type="radio" id="d2" name="degree" value="High School"> High School Degree or GED
+        <input type="radio" id="d3" name="degree" value="2 Year"> 2 Year College Degree<br>
+        <input type="radio" id="d4" name="degree" value="4 Year"> 4 Year College Degree
+        <input type="radio" id="d5" name="degree" value="Gradudate"> Graduate Degree
+    </div>
+</div>
+<br>
+</div>
+
+<script> 
+(function() {
+  var data = {};
+
+  experimentr.startTimer('demo');
+
+  d3.selectAll('input')
+  .filter(function(d) { return this.name === 'age' ? this : null; })
+  .on('change', function() { data.age = this.value; validate(); });
+  
+  d3.selectAll('input')
+  .filter(function(d) { return this.name === 'sex' ? this : null; })
+  .on('change', function() { data.sex = this.value; validate(); });
+  
+  d3.selectAll('input')
+  .filter(function(d) { return this.name === 'degree' ? this : null; })
+  .on('change', function() { data.degree = this.value; validate(); });
+  
+  function validate() {
+	  if(data.age && data.sex && data.degree) {
+	    experimentr.endTimer('demo');
+	    experimentr.addData(data);
+	    experimentr.release();
+	  }
+	}
+}());
+</script>

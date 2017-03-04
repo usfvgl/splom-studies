@@ -38,7 +38,7 @@
 	// Information that will be stored in server per module per user
 	// TODO update tag, which will be used to uniquely-identify each module and its associated data
 	// TODO tag should be a shortened version of the module name?
-	var tag = "sec2-t";
+	var tag = "sec2-temp";
 	
 	// Object to hold all data associated with this module. Each property of the object will be
 	// added to the main object for each user. Therefore, the property name needs to be unique
@@ -107,7 +107,7 @@
 				document.getElementById('warning').innerHTML = "";
 				experimentr.release();
 			} else {
-				document.getElementById('warning').innerHTML = "Warning: The \"Next\" button will only be enabled when you have highlighted a region with at least three colors.";
+				document.getElementById('warning').innerHTML = "Warning: The \"Next\" button will only be enabled when you have highlighted a region with at least " + minClass + " colors.";
 				experimentr.hold();
 			}
 		}
