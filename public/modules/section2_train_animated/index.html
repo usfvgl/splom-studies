@@ -1,6 +1,7 @@
-<div id="section2_template" class="text-center">
+<div id="section2_train_animated" class="text-center">
 	<div id="question" class="lead"><strong>Drag the black rectangle to a region in any cell<br/> with the most circles and at least 3 different colors.</strong></div>
 	<div id="chart" height="630"></div>
+	<div><p>You selected <code id="points">0</code> circles and <code id="colors">0</code> colors. Your best was <code id="best">0</code> circles.<br/><em>Please note the above information will not be shown in the non-practice questions.</em></p></div>
 	<div class="small text-center"><p id="warning" class="text-danger">The "Next" button will only be enabled when at least 3 colors are highlighted.</p></div>
 </div>
 
@@ -8,11 +9,10 @@
 	var saved = experimentr.data();
 	var info = {};
 
-	var current_question = saved['current_question'];
-	var filename = saved['data2'][current_question];
-	var animated = saved['animate2'][current_question];
+	var filename = 'train_2_2';
+	var animated = true;
 
-	var tag = filename;
+	var tag = 'section2_train_animated';
 
 	var attr = {
 		all: ["v","w","x","y","z","class"],
@@ -31,12 +31,15 @@
 		animateNum: 10
 	};
 
-	info[tag + '_animated'] = animated;
-	info[tag + '_order'] = current_question;
-
 	var warning = d3.select("p#warning");
 
-	var title = "Section 2, Task " + String(current_question + 1);
+	var points = d3.select("code#points");
+	var colors = d3.select("code#colors");
+	var best = d3.select("code#best");
+
+	var maxSelected = 0;
+
+	var title = "Section 2, Practice (Animated)";
 
 	var chart = multi_scatter('data/' + filename + '.csv', attr, category, animate, 'filled_normal', title, null, "true", "chart");
 
@@ -65,11 +68,17 @@
 			if (classes >= 3) {
 				warning.attr("class", "text-muted");
 				experimentr.release();
+
+				maxSelected = Math.max(maxSelected, +chart.highlightRect.numPoints);
+				best.text(maxSelected);
 			}
 			else {
 				warning.attr("class", "text-danger");
 				experimentr.hold();
 			}
+
+			points.text(chart.highlightRect.numPoints);
+			colors.text(classes);
 		}
 
 		return false;
@@ -92,8 +101,6 @@
 			info[tag + '_var2_range'] = [chart.highlightRect.yLow, chart.highlightRect.yHigh];
 			info[tag + '_points']  = chart.highlightRect.numPoints;
 			info[tag + '_classes'] = chart.highlightRect.numClasses;
-
-			info['current_question'] = current_question + 1;
 
 			experimentr.addData(info);
 

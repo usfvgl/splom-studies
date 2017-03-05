@@ -1,18 +1,18 @@
-<div id="section2_template" class="text-center">
-	<div id="question" class="lead"><strong>Drag the black rectangle to a region in any cell<br/> with the most circles and at least 3 different colors.</strong></div>
+<div id="section1_train_animated" class="text-center">
+	<div id="question" class="lead"><strong>Drag the black rectangle to a region<br/> for variables <var id="var1"></var> and <var id="var2"></var> with the most circles.</strong></div>
 	<div id="chart" height="630"></div>
-	<div class="small text-center"><p id="warning" class="text-danger">The "Next" button will only be enabled when at least 3 colors are highlighted.</p></div>
+	<div><p>You selected <code id="points">0</code> circles for variables <code id="x">?</code> and <code id="y">?</code>. Your best was <code id="best">0</code> circles.<br/><em>Please note the above information will not be shown in the non-practice questions.</em></p></div>
+	<div class="small text-center"><p id="warning" class="text-danger">The "Next" button will only be enabled when the correct cell is selected.</p></div>
 </div>
 
 <script language="javascript" type="text/javascript">
 	var saved = experimentr.data();
 	var info = {};
 
-	var current_question = saved['current_question'];
-	var filename = saved['data2'][current_question];
-	var animated = saved['animate2'][current_question];
+	var filename = 'train_1_2';
+	var animated = true;
 
-	var tag = filename;
+	var tag = 'section1_train_animated';
 
 	var attr = {
 		all: ["v","w","x","y","z","class"],
@@ -31,12 +31,22 @@
 		animateNum: 10
 	};
 
-	info[tag + '_animated'] = animated;
-	info[tag + '_order'] = current_question;
+	var var1 = "x";
+	var var2 = "y";
+
+	d3.select("var#var1").text(var1);
+	d3.select("var#var2").text(var2);
 
 	var warning = d3.select("p#warning");
 
-	var title = "Section 2, Task " + String(current_question + 1);
+	var points = d3.select("code#points");
+	var x = d3.select("code#x");
+	var y = d3.select("code#y");
+	var best = d3.select("code#best");
+
+	var maxSelected = 0;
+
+	var title = "Section 1, Practice (Animated)";
 
 	var chart = multi_scatter('data/' + filename + '.csv', attr, category, animate, 'filled_normal', title, null, "true", "chart");
 
@@ -60,9 +70,10 @@
 				info[tag + '_last_select'] = timestamp;
 			}
 
-			var classes = info[tag + '_classes'] = chart.highlightRect.numClasses;
+			var xAttr = chart.highlightRect.xAttr;
+			var yAttr = chart.highlightRect.yAttr;
 
-			if (classes >= 3) {
+			if ((var1 === xAttr || var1 === yAttr) && (var2 === xAttr || var2 === yAttr)) {
 				warning.attr("class", "text-muted");
 				experimentr.release();
 			}
@@ -70,6 +81,13 @@
 				warning.attr("class", "text-danger");
 				experimentr.hold();
 			}
+
+			points.text(chart.highlightRect.numPoints);
+			x.text(xAttr);
+			y.text(yAttr);
+
+			maxSelected = Math.max(maxSelected, +chart.highlightRect.numPoints);
+			best.text(maxSelected);
 		}
 
 		return false;
@@ -92,8 +110,6 @@
 			info[tag + '_var2_range'] = [chart.highlightRect.yLow, chart.highlightRect.yHigh];
 			info[tag + '_points']  = chart.highlightRect.numPoints;
 			info[tag + '_classes'] = chart.highlightRect.numClasses;
-
-			info['current_question'] = current_question + 1;
 
 			experimentr.addData(info);
 

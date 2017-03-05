@@ -11,8 +11,12 @@ var j2c    = require('json2csv')
       'time_diff_experiment',
       // section 1 timing
       "time_diff_section1_intro",
+      "time_diff_section1_train_static",
+      "time_diff_section1_train_animated",
       "time_diff_section_break",
       "time_diff_section2_intro",
+      "time_diff_section2_train_static",
+      "time_diff_section2_train_animated",
       // demographics
       'age',
       'sex',
