@@ -50,6 +50,7 @@ var experimentr = (function() {
     mainDiv.append('div')
       .attr('id', 'control')
       .append('button')
+        .classed("btn btn-default", true) // added here
         .attr('type', 'button')
         .attr('id', 'next-button')
         .attr('disabled', true)

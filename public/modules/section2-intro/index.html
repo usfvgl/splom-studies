@@ -1,0 +1,52 @@
+<div id="section2_intro">
+
+<h2 class="page-header">Section 2 Introduction</h2>
+
+<p>The next section will ask you to perform the following task:</p>
+
+<p class="center"><strong>Drag the black rectangle to a region in any cell with the most circles and at least 3 different colors.</strong></p>
+
+<br/>
+
+<h4>Training</h4>
+
+<p>This task is similar to before, except you may select regions in any cell and must now find regions with many circles and many colors.</p>
+
+<p> For example, consider the following:</p>
+
+<p><img class="splot" src="images/sec1t01.png"/></p>
+
+<p>The region highlighted has one color (<strong class="class-red">red</strong>). It would be incorrect to select that region for this task, regardless of how many circles are selected. Compare that to the highlighted region below:</p>
+
+<p><img class="splot" src="images/sec1t02.png"/></p>
+
+<p>The region highlighted has three colors (<strong class="class-blue">blue</strong>, <strong class="class-teal">teal</strong>, and <strong class="class-gold">gold</strong>). It is acceptable to select this region, however there may be a region with 3 or more colors and slightly more circles. The best possible answer has the most circles of any region with at least 3 colors.</p>
+
+<br/>
+
+<h4>Animation</h4>
+
+<p>Again, we can animate the scatterplots by looping continuously through the data and redrawing the circles. Consider the following animated versions of the previous plots:</p>
+
+<p><img class="splot" src="images/sec1t03.gif" /> <img class="splot" src="images/sec1t04.gif" /></p>
+
+<p>Both movement and flickering (changing of colors) helps indicate those regions with many colors and many circles.</p>
+
+<br/>
+
+<h4>Practice</h4>
+
+<p>We will now give you an opportunity to practice this task on an entire scatterplot matrix. We will show you the number of colors and number of  circles within the rectangle you selected in the practice questions, but this information will not be available in the non-practice questions.</p>
+
+<br/>
+
+</div>
+<script>
+	(function() {
+		experimentr.startTimer('section2_intro');
+		experimentr.release();
+		experimentr.onNext(function() {
+			experimentr.endTimer('section2_intro');
+		});
+	}());
+</script>

@@ -1,28 +1,22 @@
 <div id="debrief">
 
-<p>
-<strong>Please copy and paste the following code back on Mechanical Turk before closing this window:</strong>
-</p>
-<h2 id="postId"></h2>
+<h2 class="page-header">Thank You</h2>
 
-<p class="placeholder">
-Mention what the experiment was about and why it's important.
-</p>
+<p>Thank you for your participation in this study. It will help us understand whether animation is a promising technique for visualizing dense multiclass datasets in scatterplot matrices. For reference, your unique  response ID is:</p>
 
-<p>
-Thank you again for your participation. Feel free submit any additional comments below.
-</p>
+<p class="lead"><code id="postId"></code></p>
 
-<textarea name="textarea" rows="10" cols="50">Leave feedback here</textarea>
-<br>
-<button id="submitComments" disabled="true" type="button">Submit</button>
-<br>
-<div id="submitFeedback"></div>
+<p>If you have any comments regarding your experience, please enter them below (optional).</p>
+
+<p><textarea name="textarea" class="form-control" rows="4" placeholder="Leave feedback here"></textarea></p>
+
+<p><button id="submitComments" disabled="true" type="button" class="btn btn-default">Submit</button> <span class="text-muted" id="submitFeedback"></span></p>
+
+<p class="text-muted text-center">You may now close this browser window.</p>
+
+<br/>
 
 </div>
-
-<style>
-</style>
 
 <script>
 (function() {
@@ -42,7 +36,7 @@ Thank you again for your participation. Feel free submit any additional comments
     if( data.comments ) {
       experimentr.addData(data);
       d3.select('#submitComments').attr('disabled', 'true');
-      d3.select('#submitFeedback').text('Submit Successful');
+      d3.select('#submitFeedback').text('Feedback Submitted!');
     }
   }
 }());

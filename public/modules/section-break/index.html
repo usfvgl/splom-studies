@@ -1,0 +1,20 @@
+<div id="section_break">
+
+<h2 class="page-header">Section Break</h2>
+
+<p>Good work&mdash;you have finished section 1! There is only one more section remaining.</p>
+
+<p>You may want to take a short break to stretch your legs before starting the next and final section of questions. Click the "Next" button when you are ready to start again. It should take approximately ?? minutes to complete the remainder of the study.</p>
+
+<p class="text-danger">Please do not close this browser window until you have completed the study!</p>
+
+</div>
+<script>
+	(function() {
+		experimentr.startTimer('section_break');
+		experimentr.release();
+		experimentr.onNext(function() {
+			experimentr.endTimer('section_break');
+		});
+	}());
+</script>

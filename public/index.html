@@ -1,57 +1,93 @@
 <!DOCTYPE html>
 
 <meta charset="utf-8">
-<title>Survey</title>
+<title>User Study</title>
 
-<!-- Calls to /scripts are redirected to /node_modules/ on the server -->
 <script src="/scripts/d3/d3.min.js"></script>
 <script src="experimentr.js"></script>
-<script language="javascript" type="text/javascript" src="multi_scatter.js"></script>
 
-<link rel="stylesheet" type="text/css" href="css/main.css" />
+<script src="p5.min.js"></script>
+<script src="p5.dom.min.js"></script>
+
+<script src="multi_scatter.js"></script>
+
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css"/>
+<link rel="stylesheet" type="text/css" href="css/main.css"/>
 
 <body></body>
 
 <script>
-/*
- * Compute a random integer i within a given range,
- * where lower <= i < upper
-*/
-function getRandomInteger(lower, upper) {
-	console.assert(arguments.length === 2, "getRandomInteger() requires lower and upper parameters.");
-	return Math.floor(Math.random() * (upper - lower)) + lower;
-}
+var repeats = 6;
+var info = {};
 
-/*
- * Put all modules involved in experiment between initial consent module and
- * ending debrief module.
- */
+// pre-generate dataset order and animation order
+var data1 = d3.range(repeats).map(function(i) { return 'data_1_' + (i + 1); });
+var data2 = d3.range(repeats).map(function(i) { return 'data_2_' + (i + 1); });
+
+var animate1 = d3.range(repeats).map(function(i) { return i % 2 == 0;});
+var animate2 = d3.range(repeats).map(function(i) { return i % 2 == 0;});
+
+d3.shuffle(data1);
+d3.shuffle(data2);
+d3.shuffle(animate1);
+d3.shuffle(animate2);
+
+info['data1'] = data1;
+info['data2'] = data2;
+info['animate1'] = animate1;
+info['animate2'] = animate2;
+info['current_question'] = 0;
+
 var modules = [
+	// study introduction
   'modules/splom_consent/',
+
+	// demographics
   'modules/splom_demographics/',
   'modules/splot_comfort/',
   'modules/splom_comfort/',
+
+	// section introduction
+	'modules/section-intro/',
+
+	// section 1 introduction
   'modules/section1-intro/',
+	// 'modules/section1-train-static/',
+	// 'modules/section1-train-animated/',
+	'modules/section1-warn/',
+
+	// section 1 evaluated
+	// the readme says not to do this... but it works?
   'modules/section1-template/',
+	'modules/section1-template/',
+	'modules/section1-template/',
+	'modules/section1-template/',
+	'modules/section1-template/',
+	'modules/section1-template/',
+
+	// section break
+	'modules/section-break/',
+
+	// section 2 introduction
+	'modules/section2-intro/',
+	// 'modules/section2-train-static/',
+	// 'modules/section2-train-animated/',
+	'modules/section2-warn/',
+
+	// section 2 evaluated
   'modules/section2-template/',
+	'modules/section2-template/',
+	'modules/section2-template/',
+	'modules/section2-template/',
+	'modules/section2-template/',
+	'modules/section2-template/',
+
+	// conclusion
   'modules/debrief/'
 ];
 
-// Randomize order of test modules, keeping consent as first and debrief as last
-var numModules = modules.length;
-var randomIndex;
-for (var i = 4; i < numModules - 2; i++) {
-	randomIndex = getRandomInteger(i, numModules - 1);
-	var temp = modules[i];
-	modules[i] = modules[randomIndex];
-	modules[randomIndex] = temp;
-}
-
-// Add randomized module order to session tracking;
-var storeInfo = {};
-storeInfo['module_order'] = modules.join().replace(/modules\//g,"");
-experimentr.addData(storeInfo);
-
+experimentr.addData(info);
 experimentr.sequence(modules).start();
 
 </script>

@@ -1,8 +1,8 @@
-@import url(https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic);
+/*@import url(https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic);*/
 
 * {
   color: #333;
-  font-family: "PT Sans", sans-serif;
+  /*font-family: "PT Sans", sans-serif;*/
 }
 
 body {
@@ -10,24 +10,33 @@ body {
   width: 960px;
 }
 
-span.blue {
+.class-blue {
   color: #80b1d3;
 }
 
-span.gold {
-  color: #fdb462
+.class-gold {
+  color: #fdb462;
 }
 
-span.purple {
-  color: #bc80bd
+.class-purple {
+  color: #bc80bd;
 }
 
-span.red {
-  color: #fb8072
+.class-red {
+  color: #fb8072;
 }
 
-span.teal {
-  color: #8dd3c7
+.class-teal {
+  color: #8dd3c7;
+}
+
+h4.question {
+  font-weight: bolder;
+  text-transform: uppercase;
+  font-size: 90%;
+  color: #777;
+  margin-top: 30px;
+  margin-bottom: 4px;
 }
 
 #experimentr {
@@ -61,9 +70,14 @@ span.teal {
 }
 
 .splom {
-	width: 700px;
+	width: 650px;
 }
 
 .splot {
 	width: 250px;
+}
+
+.splom, .splot {
+  margin-bottom: 10px;
+  margin-left: 1.5em;
 }
