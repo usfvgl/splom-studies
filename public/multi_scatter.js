@@ -612,7 +612,7 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 			animateStart = animateStart % rowCount;
 			drawLoadBar(animateStart/rowCount);
 		} else {
-			image(buffers.colorBuffer, 0, 0, canvasWidth * disp, canvasHeight * disp, 0, 0, canvasWidth, canvasHeight);
+			image(buffers.colorBuffer, 0, 0, canvasWidth * disp, canvasHeight * disp);
 		}
 	}
 
@@ -668,14 +668,14 @@ function multi_scatter(_dataSource, _attr, _category, _animate, _encoding, _char
 	function brushRedraw() {
 		resetPlotArea();
 		if (brushed === 0) {
-			image(buffers.colorBuffer, 0, 0, canvasWidth * disp, canvasHeight * disp, 0, 0, canvasWidth, canvasHeight);
+			image(buffers.colorBuffer, 0, 0, canvasWidth * disp, canvasHeight * disp);
 		} else {
-			image(buffers.greyBuffer, 0, 0, canvasWidth * disp, canvasHeight * disp, 0, 0, canvasWidth, canvasHeight);
+			image(buffers.greyBuffer, 0, 0, canvasWidth * disp, canvasHeight * disp);
 			for (var i = 0; i < brushed; i++) {
 				if (encoding === "filled_blended" && i === 1) {
 					blendMode(pointEncode.blend);
 				}
-				image(buffers[selected[i]], 0, 0, canvasWidth * disp, canvasHeight * disp, 0, 0, canvasWidth, canvasHeight);
+				image(buffers[selected[i]], 0, 0, canvasWidth * disp, canvasHeight * disp);
 			}
 			blendMode(BLEND);
 		}
