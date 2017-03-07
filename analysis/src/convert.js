@@ -157,6 +157,13 @@ fs.readFile(file, 'utf8', function (err, data) {
 
   data = JSON.parse(data)
 
+  // handles optional comments field
+  data.forEach(function(row) {
+	  if (!row.comments) {
+		  row.comments = " ";
+	  }
+  });
+
   // filters any undefined data (it makes R scripting easier)
   data = filterUndefined(data)
 
