@@ -22,7 +22,7 @@ var repeats = 6;
 var info = {};
 
 // pre-generate dataset order and animation order
-var data1 = d3.range(repeats).map(function(i) { return 'data_1_' + (i + 1); });
+var data1 = ['data_1_1_v_x', 'data_1_2_w_x', 'data_1_3_v_x', 'data_1_4_w_y', 'data_1_5_v_w', 'data_1_6_v_y'];
 var data2 = d3.range(repeats).map(function(i) { return 'data_2_' + (i + 1); });
 
 var animate1 = d3.range(repeats).map(function(i) { return i % 2 == 0;});

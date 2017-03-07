@@ -12,7 +12,7 @@
 	var filename = saved['data1'][current_question];
 	var animated = saved['animate1'][current_question];
 
-	var tag = filename;
+	var tag = filename.slice(0, 8);
 
 	var attr = {
 		all: ["v","w","x","y","z","class"],
@@ -31,8 +31,8 @@
 		animateNum: 10
 	};
 
-	var var1 = "x";
-	var var2 = "y";
+	var var1 = filename.slice(9, 10);
+	var var2 = filename.slice(11, 12);
 
 	info[tag + '_animated'] = animated;
 	info[tag + '_order'] = current_question;

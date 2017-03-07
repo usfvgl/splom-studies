@@ -74,7 +74,7 @@ h4.question {
 }
 
 .splot {
-	width: 250px;
+	width: 200px;
 }
 
 .splom, .splot {
@@ -85,4 +85,11 @@ h4.question {
 code#points, code#best, code#classes {
   min-width: 3em;
   display: inline-block;
+}
+
+#question var {
+  padding: 0px 6px 2px 6px;
+  display: inline-block;
+  background-color: #f9f2f4;
+  border-radius: 4px;
 }
