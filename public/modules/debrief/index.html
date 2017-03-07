@@ -2,7 +2,7 @@
 
 <h2 class="page-header">Thank You</h2>
 
-<p>Thank you for your participation in this study. It will help us understand whether animation is a promising technique for visualizing dense multiclass datasets in scatterplot matrices. For reference, your unique  response ID is:</p>
+<p>You completed the study in <span id="duration"></span> minutes. Thank you for your participation. It will help us understand whether animation is a promising technique for visualizing dense multiclass datasets in scatterplot matrices. For reference, your unique  response ID is:</p>
 
 <p class="lead"><code id="postId"></code></p>
 
@@ -24,6 +24,11 @@
     , data    = {};
 
   d3.select("#postId").text(postId);
+
+  var saved = experimentr.data();
+  var elapsed = saved.time_diff_experiment;
+  elapsed = elapsed / 1000 / 60;
+  d3.select("#duration").text(elapsed.toFixed(2));
 
   var comments = d3.select('#debrief').select('textarea')
     .on('keypress', function() { d3.select('#submitComments').attr('disabled', null); })

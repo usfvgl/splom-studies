@@ -4,23 +4,23 @@
 
 <p>The next section will ask you to perform the following task:</p>
 
-<p class="center"><strong>Drag the black rectangle to a region in any cell with the most circles and at least 3 different colors.</strong></p>
+<p class="center"><strong>Drag the black rectangle to a region in any cell with the most circles and at least 4 different colors.</strong></p>
 
 <br/>
 
 <h4>Training</h4>
 
-<p>This task is similar to before, except you may select regions in any cell and must now find regions with many circles and many colors.</p>
+<p>This task is similar to before, except you may select regions <strong>in ANY cell</strong> and must now find regions with many circles <strong>AND</strong> many colors.</p>
 
 <p> For example, consider the following:</p>
 
-<p><img class="splot" src="images/sec1t01.png"/></p>
+<p><img class="splot" src="images/train2_region1.png"/></p>
 
-<p>The region highlighted has one color (<strong class="class-red">red</strong>). It would be incorrect to select that region for this task, regardless of how many circles are selected. Compare that to the highlighted region below:</p>
+<p>The region highlighted has two colors (<strong class="class-red">red</strong> and <strong class="class-gold">gold</strong>). It would be <strong>incorrect</strong> to select that region for this task, regardless of how many circles are selected. Compare that to the highlighted region below:</p>
 
-<p><img class="splot" src="images/sec1t02.png"/></p>
+<p><img class="splot" src="images/train2_region2.png"/></p>
 
-<p>The region highlighted has three colors (<strong class="class-blue">blue</strong>, <strong class="class-teal">teal</strong>, and <strong class="class-gold">gold</strong>). It is acceptable to select this region, however there may be a region with 3 or more colors and slightly more circles. The best possible answer has the most circles of any region with at least 3 colors.</p>
+<p>The region highlighted has five colors (<strong class="class-blue">blue</strong>, <strong class="class-purple">purple</strong>, <strong class="class-teal">teal</strong>, <strong class="class-red">red</strong> and <strong class="class-gold">gold</strong>). It is acceptable to select this region, however there may be a region with 4 or more colors <strong>and</strong> slightly more circles in another cell. The best possible answer has the most circles of any region in any cell with at least 4 colors.</p>
 
 <br/>
 
@@ -28,7 +28,7 @@
 
 <p>Again, we can animate the scatterplots by looping continuously through the data and redrawing the circles. Consider the following animated versions of the previous plots:</p>
 
-<p><img class="splot" src="images/sec1t03.gif" /> <img class="splot" src="images/sec1t04.gif" /></p>
+<p><img class="splot" src="images/train2_region1.gif" /> <img class="splot" src="images/train2_region2.gif" /></p>
 
 <p>Both movement and flickering (changing of colors) helps indicate those regions with many colors and many circles.</p>
 

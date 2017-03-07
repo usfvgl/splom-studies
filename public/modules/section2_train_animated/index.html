@@ -1,8 +1,8 @@
 <div id="section2_train_animated" class="text-center">
-	<div id="question" class="lead"><strong>Drag the black rectangle to a region in any cell<br/> with the most circles and at least 3 different colors.</strong></div>
+	<div id="question" class="lead"><strong>Drag the black rectangle to a region in any cell<br/> with the most circles and at least 4 different colors.</strong></div>
 	<div id="chart" height="630"></div>
 	<div><p>You selected <code id="points">0</code> circles and <code id="colors">0</code> colors. Your best was <code id="best">0</code> circles.<br/><em>Please note the above information will not be shown in the non-practice questions.</em></p></div>
-	<div class="small text-center"><p id="warning" class="text-danger">The "Next" button will only be enabled when at least 3 colors are highlighted.</p></div>
+	<div class="small text-center"><p id="warning" class="text-danger">The "Next" button will only be enabled when at least 4 colors are highlighted.</p></div>
 </div>
 
 <script language="javascript" type="text/javascript">
@@ -65,7 +65,7 @@
 
 			var classes = info[tag + '_classes'] = chart.highlightRect.numClasses;
 
-			if (classes >= 3) {
+			if (classes >= 4) {
 				warning.attr("class", "text-muted");
 				experimentr.release();
 
