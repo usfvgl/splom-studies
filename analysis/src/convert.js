@@ -9,7 +9,7 @@ var j2c    = require('json2csv')
       "time_start_experiment",
       "time_end_experiment",
       'time_diff_experiment',
-      // section 1 timing
+      // section timing
       "time_diff_section1_intro",
       "time_diff_section1_train_static",
       "time_diff_section1_train_animated",
@@ -23,7 +23,6 @@ var j2c    = require('json2csv')
       'degree',
       'splot_comfort',
       'splom_comfort',
-      'comments',
       // section 1 data order
       "data_1_1_order",
       "data_1_2_order",
@@ -143,7 +142,13 @@ var j2c    = require('json2csv')
       "data_2_6_var1",
       "data_2_6_var2",
       "data_2_6_var1_range",
-      "data_2_6_var2_range"
+      "data_2_6_var2_range",
+      // conclusion
+      "static_interpret",
+      "animated_interpret",
+      "distracting",
+      "technique_preference",
+      'comments'
     ]
   , data
 
