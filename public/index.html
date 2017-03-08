@@ -22,7 +22,7 @@ var repeats = 6;
 var info = {};
 
 // pre-generate dataset order and animation order
-var data1 = ['data_1_1_v_x', 'data_1_2_w_x', 'data_1_3_v_x', 'data_1_4_w_y', 'data_1_5_v_w', 'data_1_6_v_y'];
+var data1 = ['data_1_1_w_y', 'data_1_2_x_y', 'data_1_3_v_w', 'data_1_4_v_y', 'data_1_5_w_x', 'data_1_6_y_z'];
 var data2 = d3.range(repeats).map(function(i) { return 'data_2_' + (i + 1); });
 
 var animate1 = d3.range(repeats).map(function(i) { return i % 2 == 0;});
@@ -41,20 +41,20 @@ info['current_question'] = 0;
 
 var modules = [
 	// study introduction
-  'modules/splom_consent/',
+  // 'modules/splom_consent/',
 
 	// demographics
-  'modules/splom_demographics/',
-  'modules/splot_comfort/',
-  'modules/splom_comfort/',
+  // 'modules/splom_demographics/',
+  // 'modules/splot_comfort/',
+  // 'modules/splom_comfort/',
 
 	// section introduction
-	'modules/section_intro/',
+	// 'modules/section_intro/',
 
 	// section 1 introduction
-  'modules/section1_intro/',
-	'modules/section1_train_static/',
-	'modules/section1_train_animated/',
+  // 'modules/section1_intro/',
+	// 'modules/section1_train_static/',
+	// 'modules/section1_train_animated/',
 	'modules/section1_warn/',
 
 	// section 1 evaluated
