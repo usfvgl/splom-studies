@@ -1,7 +1,7 @@
 <div id="section1_train_static" class="text-center">
 	<div id="question" class="lead"><strong>Drag the black rectangle to a region<br/> for variables <var id="var1"></var> and <var id="var2"></var> with the most circles.</strong></div>
 	<div id="chart" height="630"></div>
-	<div><p>You selected <code id="points">0</code> circles for variables <code id="x">?</code> and <code id="y">?</code>. Your best was <code id="best">0</code> circles.<br/><em>Please note the above information will not be shown in the non-practice questions.</em></p></div>
+	<div><p>You selected <code id="points">0</code> circles for variables <code id="x">?</code> and <code id="y">?</code>. Your best in the correct cell was <code id="best">0</code> circles.<br/><em>Please note the above information will not be shown in the non-practice questions.</em></p></div>
 	<div class="small text-center"><p id="warning" class="text-danger">The "Next" button will only be enabled when the correct cell is selected.</p></div>
 </div>
 
@@ -28,7 +28,7 @@
 	var animate = {
 		isAnimate: animated,
 		initDraw: true,
-		animateNum: 3
+		animateNum: 8
 	};
 
 	var var1 = "v";
@@ -76,6 +76,9 @@
 			if ((var1 === xAttr || var1 === yAttr) && (var2 === xAttr || var2 === yAttr)) {
 				warning.attr("class", "text-muted");
 				experimentr.release();
+
+				maxSelected = Math.max(maxSelected, +chart.highlightRect.numPoints);
+				best.text(maxSelected);
 			}
 			else {
 				warning.attr("class", "text-danger");
@@ -85,9 +88,6 @@
 			points.text(chart.highlightRect.numPoints);
 			x.text(xAttr);
 			y.text(yAttr);
-
-			maxSelected = Math.max(maxSelected, +chart.highlightRect.numPoints);
-			best.text(maxSelected);
 		}
 
 		return false;
