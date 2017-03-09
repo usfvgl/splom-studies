@@ -148,7 +148,8 @@ var j2c    = require('json2csv')
       "animated_interpret",
       "distracting",
       "technique_preference",
-      'comments'
+      "preference_comments",
+      "comments"
     ]
   , data
 
@@ -161,6 +162,9 @@ fs.readFile(file, 'utf8', function (err, data) {
   data.forEach(function(row) {
 	  if (!row.comments) {
 		  row.comments = " ";
+	  }
+    else if (!row.preference_comments) {
+		  row.preference_comments = " ";
 	  }
   });
 

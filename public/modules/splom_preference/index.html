@@ -93,6 +93,13 @@
   </div>
 </div>
 
+<div id="preference_comments" class="form-group">
+  <h4 class="question">Question</h4>
+  <strong>Please explain your choices above (optional).</strong>
+
+  <p><textarea name="textarea" class="form-control" rows="4" placeholder="Explain your choices here"></textarea></p>
+</div>
+
 <br>
 
 </div>
@@ -119,8 +126,11 @@
   .filter(function(d) { return this.name === 'distracting' ? this : null; })
   .on('change', function() { data.distracting = this.value; validate(); });
 
+  var comments = d3.select('#preference_comments').select('textarea');
+
   function validate() {
 	  if(data.static_interpret && data.animated_interpret && data.technique_preference && data.distracting) {
+      data.preference_comments = comments.property('value');
 	    experimentr.endTimer('preferences');
 	    experimentr.addData(data);
 	    experimentr.release();
