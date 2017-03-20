@@ -163,8 +163,14 @@ fs.readFile(file, 'utf8', function (err, data) {
 	  if (!row.comments) {
 		  row.comments = " ";
 	  }
-    else if (!row.preference_comments) {
+
+      if (!row.preference_comments) {
 		  row.preference_comments = " ";
+	  }
+
+	  // fix this here since didn't fix it in the module in time 
+	  if (!row.sex) {
+		  row.sex = "Other";
 	  }
   });
 
