@@ -1,0 +1,56 @@
+<div id="splot_comfort">
+
+<h2 class="page-header">Scatterplots</h2>
+
+<p>Pictured below is an example <strong>scatterplot</strong> visualization for variable <var>z</var> encoded by horizontal position and variable <var>v</var> encoded by vertical position. Each circle is colored by its class, or category.</p>
+
+<p><img class="splot" src="images/splot_comfort.png"/></p>
+
+<p>For example, the circles in <strong class="class-purple">purple</strong> have high values of <var>z</var> and <var>v</var> and belong to the same class. The <strong class="class-red">red</strong> circles have <var>z</var> values near 5 and <var>v</var> values under 5. The <strong class="class-blue">blue</strong>, <strong class="class-teal">teal</strong>, and <strong class="class-gold">gold</strong> circles have overlapping values for both variables.</p>
+
+<div id="degree">
+  <h4 class="question">Question</h4>
+
+  <p><strong>Please rate your comfort level with scatterplots on a scale of 1 to 7.</strong> A value of 1 indicates you are a novice and very uncomfortable interpreting scatterplots and 7 indicates you are an expert and very comfortable interpreting scatterplots.</p>
+
+  <div class="form-group" id="comfort">
+    <div class="radio"><label><input type="radio" id="d1" name="comfort" value="1"> 1 Very Uncomfortable</label></div>
+
+    <div class="radio"><label><input type="radio" id="d2" name="comfort" value="2"> 2 Uncomfortable</label></div>
+
+    <div class="radio"><label><input type="radio" id="d3" name="comfort" value="3"> 3 Somewhat Uncomfortable</label></div>
+
+    <div class="radio"><label><input type="radio" id="d4" name="comfort" value="4"> 4 Neutral</label></div>
+
+    <div class="radio"><label><input type="radio" id="d5" name="comfort" value="5"> 5 Somewhat Comfortable</label></div>
+
+    <div class="radio"><label><input type="radio" id="d6" name="comfort" value="6"> 6 Comfortable</label></div>
+
+    <div class="radio"><label><input type="radio" id="d7" name="comfort" value="7"> 7 Very Comfortable</label></div>
+
+  </div>
+</div>
+
+<br>
+
+</div>
+
+<script>
+(function() {
+  var data = {};
+
+  experimentr.startTimer('splot_comfort');
+
+  d3.selectAll('input')
+  .filter(function(d) { return this.name === 'comfort' ? this : null; })
+  .on('change', function() { data.splot_comfort = this.value; validate(); });
+
+  function validate() {
+	  if(data.splot_comfort) {
+	    experimentr.endTimer('splot_comfort');
+	    experimentr.addData(data);
+	    experimentr.release();
+	  }
+	}
+}());
+</script>

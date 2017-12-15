@@ -1,0 +1,20 @@
+<div id="section2_warn">
+
+<h2 class="page-header">Section 2 Warning</h2>
+
+<p>This concludes the training and practice questions for section 2. You will now be asked this question 6 times for different datasets. Please answer the following questions as accurately and efficiently as possible.</p>
+
+</div>
+<script>
+	(function() {
+		experimentr.startTimer('section2_warn');
+		experimentr.release();
+		experimentr.onNext(function() {
+			experimentr.endTimer('section2_warn');
+
+			var info = {};
+			info['current_question'] = 0;
+			experimentr.addData(info);
+		});
+	}());
+</script>

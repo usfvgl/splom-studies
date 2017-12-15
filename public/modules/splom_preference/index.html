@@ -1,0 +1,140 @@
+<div id="splom_preferences">
+
+<h2 class="page-header">Preferences</h2>
+
+<p>You have now completed both sections of visualization tasks. Please answer the following questions regarding your experience.</p>
+
+<div id="static_interpret" class="form-group">
+  <h4 class="question">Question</h4>
+  <strong>The static (non-animated) scatterplot matrices are easy to interpret.</strong>
+
+  <div id="sioptions">
+    <div class="radio"><label><input type="radio" id="d1" name="static_interpret" value="1"> 1 Strongly Disagree</label></div>
+
+    <div class="radio"><label><input type="radio" id="d2" name="static_interpret" value="2"> 2 Disagree</label></div>
+
+    <div class="radio"><label><input type="radio" id="d3" name="static_interpret" value="3"> 3 Somewhat Disagree</label></div>
+
+    <div class="radio"><label><input type="radio" id="d4" name="static_interpret" value="4"> 4 Neutral</label></div>
+
+    <div class="radio"><label><input type="radio" id="d5" name="static_interpret" value="5"> 5 Somewhat Agree</label></div>
+
+    <div class="radio"><label><input type="radio" id="d6" name="static_interpret" value="6"> 6 Agree</label></div>
+
+    <div class="radio"><label><input type="radio" id="d7" name="static_interpret" value="7"> 7 Strongly Agree</label></div>
+
+  </div>
+</div>
+
+<div id="animated_interpret" class="form-group">
+  <h4 class="question">Question</h4>
+  <strong>The animated scatterplot matrices are easy to interpret.</strong>
+
+  <div id="aioptions">
+    <div class="radio"><label><input type="radio" id="d1" name="animated_interpret" value="1"> 1 Strongly Disagree</label></div>
+
+    <div class="radio"><label><input type="radio" id="d2" name="animated_interpret" value="2"> 2 Disagree</label></div>
+
+    <div class="radio"><label><input type="radio" id="d3" name="animated_interpret" value="3"> 3 Somewhat Disagree</label></div>
+
+    <div class="radio"><label><input type="radio" id="d4" name="animated_interpret" value="4"> 4 Neutral</label></div>
+
+    <div class="radio"><label><input type="radio" id="d5" name="animated_interpret" value="5"> 5 Somewhat Agree</label></div>
+
+    <div class="radio"><label><input type="radio" id="d6" name="animated_interpret" value="6"> 6 Agree</label></div>
+
+    <div class="radio"><label><input type="radio" id="d7" name="animated_interpret" value="7"> 7 Strongly Agree</label></div>
+
+  </div>
+</div>
+
+
+<div id="distracting" class="form-group">
+  <h4 class="question">Question</h4>
+  <strong>The animated scatterplot matrices are distracting.</strong>
+
+  <div id="doptions">
+    <div class="radio"><label><input type="radio" id="d1" name="distracting" value="1"> 1 Strongly Disagree</label></div>
+
+    <div class="radio"><label><input type="radio" id="d2" name="distracting" value="2"> 2 Disagree</label></div>
+
+    <div class="radio"><label><input type="radio" id="d3" name="distracting" value="3"> 3 Somewhat Disagree</label></div>
+
+    <div class="radio"><label><input type="radio" id="d4" name="distracting" value="4"> 4 Neutral</label></div>
+
+    <div class="radio"><label><input type="radio" id="d5" name="distracting" value="5"> 5 Somewhat Agree</label></div>
+
+    <div class="radio"><label><input type="radio" id="d6" name="distracting" value="6"> 6 Agree</label></div>
+
+    <div class="radio"><label><input type="radio" id="d7" name="distracting" value="7"> 7 Strongly Agree</label></div>
+
+  </div>
+</div>
+
+<div id="technique_preference" class="form-group">
+  <h4 class="question">Question</h4>
+  <strong>Which technique (static versus animated) do you prefer more?</strong>
+
+  <div id="tpoptions">
+    <div class="radio"><label><input type="radio" id="d1" name="technique_preference" value="1"> 1 Strongly Prefer Static</label></div>
+
+    <div class="radio"><label><input type="radio" id="d2" name="technique_preference" value="2"> 2 Prefer Static</label></div>
+
+    <div class="radio"><label><input type="radio" id="d3" name="technique_preference" value="3"> 3 Somewhat Prefer Static</label></div>
+
+    <div class="radio"><label><input type="radio" id="d4" name="technique_preference" value="4"> 4 Neutral</label></div>
+
+    <div class="radio"><label><input type="radio" id="d5" name="technique_preference" value="5"> 5 Somewhat Prefer Animated</label></div>
+
+    <div class="radio"><label><input type="radio" id="d6" name="technique_preference" value="6"> 6 Prefer Animated</label></div>
+
+    <div class="radio"><label><input type="radio" id="d7" name="technique_preference" value="7"> 7 Strongly Prefer Animated</label></div>
+
+  </div>
+</div>
+
+<div id="preference_comments" class="form-group">
+  <h4 class="question">Question</h4>
+  <strong>Please explain your choices above (optional).</strong>
+
+  <p><textarea name="textarea" class="form-control" rows="4" placeholder="Explain your choices here"></textarea></p>
+</div>
+
+<br>
+
+</div>
+
+<script>
+(function() {
+  var data = {};
+
+  experimentr.startTimer('preferences');
+
+  d3.selectAll('input')
+  .filter(function(d) { return this.name === 'static_interpret' ? this : null; })
+  .on('change', function() { data.static_interpret = this.value; validate(); });
+
+  d3.selectAll('input')
+  .filter(function(d) { return this.name === 'animated_interpret' ? this : null; })
+  .on('change', function() { data.animated_interpret = this.value; validate(); });
+
+  d3.selectAll('input')
+  .filter(function(d) { return this.name === 'technique_preference' ? this : null; })
+  .on('change', function() { data.technique_preference = this.value; validate(); });
+
+  d3.selectAll('input')
+  .filter(function(d) { return this.name === 'distracting' ? this : null; })
+  .on('change', function() { data.distracting = this.value; validate(); });
+
+  var comments = d3.select('#preference_comments').select('textarea');
+
+  function validate() {
+	  if(data.static_interpret && data.animated_interpret && data.technique_preference && data.distracting) {
+      data.preference_comments = comments.property('value');
+	    experimentr.endTimer('preferences');
+	    experimentr.addData(data);
+	    experimentr.release();
+	  }
+	}
+}());
+</script>

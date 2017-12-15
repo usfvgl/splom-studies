@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+<meta charset="utf-8">
+<title>User Study</title>
+
+<script src="/scripts/d3/d3.min.js"></script>
+<script src="experimentr.js"></script>
+
+<script src="p5.min.js"></script>
+<script src="p5.dom.min.js"></script>
+
+<script src="multi_scatter.js"></script>
+
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css"/>
+<link rel="stylesheet" type="text/css" href="css/main.css"/>
+
+<body></body>
+
+<script>
+var repeats = 6;
+var info = {};
+
+// pre-generate dataset order and animation order
+var data1 = ['data_1_1_w_y', 'data_1_2_x_y', 'data_1_3_v_w', 'data_1_4_v_y', 'data_1_5_w_x', 'data_1_6_y_z'];
+var data2 = d3.range(repeats).map(function(i) { return 'data_2_' + (i + 1); });
+
+var animate1 = d3.range(repeats).map(function(i) { return i % 2 == 0;});
+var animate2 = d3.range(repeats).map(function(i) { return i % 2 == 0;});
+
+d3.shuffle(data1);
+d3.shuffle(data2);
+d3.shuffle(animate1);
+d3.shuffle(animate2);
+
+info['data1'] = data1;
+info['data2'] = data2;
+info['animate1'] = animate1;
+info['animate2'] = animate2;
+info['current_question'] = 0;
+
+var modules = [
+	// study introduction
+  'modules/splom_consent/',
+
+	// demographics
+  'modules/splom_demographics/',
+  'modules/splot_comfort/',
+  'modules/splom_comfort/',
+
+	// section introduction
+	'modules/section_intro/',
+
+	// section 1 introduction
+  'modules/section1_intro/',
+	'modules/section1_train_static/',
+	'modules/section1_train_animated/',
+	'modules/section1_warn/',
+
+	// section 1 evaluated
+	// the readme says not to do this... but it works?
+  // should actually use the "repeats" variable?
+  'modules/section1_template/',
+	'modules/section1_template/',
+	'modules/section1_template/',
+	'modules/section1_template/',
+	'modules/section1_template/',
+	'modules/section1_template/',
+
+	// section break
+	'modules/section_break/',
+
+	// section 2 introduction
+	'modules/section2_intro/',
+	'modules/section2_train_static/',
+	'modules/section2_train_animated/',
+	'modules/section2_warn/',
+
+	// section 2 evaluated
+  'modules/section2_template/',
+	'modules/section2_template/',
+	'modules/section2_template/',
+	'modules/section2_template/',
+	'modules/section2_template/',
+	'modules/section2_template/',
+
+	// conclusion
+  'modules/splom_preference',
+  'modules/debrief/'
+];
+
+experimentr.addData(info);
+experimentr.sequence(modules).start();
+
+</script>

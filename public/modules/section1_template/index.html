@@ -1,0 +1,112 @@
+<div id="section1_template" class="text-center">
+	<div id="question" class="lead"><strong>Drag the black rectangle to a region<br/> for variables <var id="var1"></var> and <var id="var2"></var> with the most circles.</strong></div>
+	<div id="chart" height="630"></div>
+	<div class="small text-center"><p id="warning" class="text-danger">The "Next" button will only be enabled when the correct cell is selected.</p></div>
+</div>
+
+<script language="javascript" type="text/javascript">
+	var saved = experimentr.data();
+	var info = {};
+
+	var current_question = saved['current_question'];
+	var filename = saved['data1'][current_question];
+	var animated = saved['animate1'][current_question];
+
+	var tag = filename.slice(0, 8);
+
+	var attr = {
+		all: ["v","w","x","y","z","class"],
+		use: [0, 1, 2, 3, 4]
+	};
+
+	var category = {
+		name: "class",
+		index: 5,
+		values: ["A", "B", "C", "D", "E"]
+	};
+
+	var animate = {
+		isAnimate: animated,
+		initDraw: true,
+		animateNum: 8
+	};
+
+	var var1 = filename.slice(9, 10);
+	var var2 = filename.slice(11, 12);
+
+	info[tag + '_animated'] = animated;
+	info[tag + '_order'] = current_question;
+
+	d3.select("var#var1").text(var1);
+	d3.select("var#var2").text(var2);
+
+	var warning = d3.select("p#warning");
+
+	var title = "Section 1, Task " + String(current_question + 1);
+
+	var chart = multi_scatter('data/' + filename + '.csv', attr, category, animate, 'filled_normal', title, null, "true", "chart");
+
+	function preload() { chart.preload(); }
+	function setup() { chart.setup(); }
+	function draw() { chart.draw(); }
+
+	function mousePressed() { chart.mousePressed(); return false; }
+	function mouseMoved() { chart.mouseMoved(); return false; }
+	function mouseDragged() { chart.mouseDragged(); return false; }
+
+	function mouseReleased() {
+
+		if(chart.mouseReleased()) {
+			var timestamp = Date.now();
+
+			if(info[tag + '_first_select'] === undefined) {
+					info[tag + '_first_select'] = timestamp;
+			}
+			else {
+				info[tag + '_last_select'] = timestamp;
+			}
+
+			var xAttr = chart.highlightRect.xAttr;
+			var yAttr = chart.highlightRect.yAttr;
+
+			if ((var1 === xAttr || var1 === yAttr) && (var2 === xAttr || var2 === yAttr)) {
+				warning.attr("class", "text-muted");
+				experimentr.release();
+			}
+			else {
+				warning.attr("class", "text-danger");
+				experimentr.hold();
+			}
+		}
+
+		return false;
+	}
+
+	new p5();
+
+	(function() {
+		experimentr.startTimer(tag);
+		experimentr.onNext(function() {
+			experimentr.endTimer(tag);
+
+			if(info[tag + '_last_select'] === undefined) {
+				info[tag + '_last_select'] = 0;
+			}
+
+			info[tag + '_var1'] = chart.highlightRect.xAttr;
+			info[tag + '_var2'] = chart.highlightRect.yAttr;
+			info[tag + '_var1_range'] = [chart.highlightRect.xLow, chart.highlightRect.xHigh];
+			info[tag + '_var2_range'] = [chart.highlightRect.yLow, chart.highlightRect.yHigh];
+			info[tag + '_points']  = chart.highlightRect.numPoints;
+			info[tag + '_classes'] = chart.highlightRect.numClasses;
+
+			info['current_question'] = current_question + 1;
+
+			experimentr.addData(info);
+
+			remove(); // for some reason this fixed a lot of bugs?
+		});
+
+	}());
+
+</script>

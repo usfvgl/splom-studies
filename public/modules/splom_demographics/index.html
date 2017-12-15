@@ -1,0 +1,74 @@
+<div id="splom_demographics">
+
+<h2 class="page-header">Demographics</h2>
+
+<p id="demoinstr">Please answer the following questions regarding your background. Your responses will be anonymous.</p>
+
+<div id="age" class="form-group">
+  <h4 class="question">Question</h4>
+  <strong>What is your age?</strong>
+
+  <div id="ages">
+    <div class="radio"><label><input type="radio" id="a1" name="age" value="24-"> 24 or Younger</label></div>
+    <div class="radio"><label><input type="radio" id="a2" name="age" value="25-44"> 25 to 44</label></div>
+    <div class="radio"><label><input type="radio" id="a3" name="age" value="45-64"> 45 to 64</label></div>
+    <div class="radio"><label><input type="radio" id="a4" name="age" value="65-74"> 65 to 74</label></div>
+    <div class="radio"><label><input type="radio" id="a5" name="age" value="75+"> 75 or Older</label></div>
+  </div>
+</div>
+
+<div id="sex" class="form-group">
+  <h4 class="question">Question</h4>
+  <strong>How would you describe yourself?</strong>
+
+  <div id="sexes">
+    <div class="radio"><label><input type="radio" id="s1" name="sex" value="Male"> Male</label></div>
+    <div class="radio"><label><input type="radio" id="s2" name="sex" value="Female"> Female</label></div>
+    <div class="radio"><label><input type="radio" id="s3" name="sex" value="Other"> Other &nbsp; <input type="text" id="s4" name="sex"></label></div>
+  </div>
+</div>
+
+<div id="degree" class="form-group">
+  <h4 class="question">Question</h4>
+  <strong>Please indicate your highest level of education:</strong>
+
+  <div id="degrees">
+    <div class="radio"><label><input type="radio" id="d1" name="degree" value="No degree"> No Degree</label></div>
+    <div class="radio"><label><input type="radio" id="d2" name="degree" value="High School"> High School Degree or GED</label></div>
+    <div class="radio"><label><input type="radio" id="d3" name="degree" value="2 Year"> 2 Year College Degree</label></div>
+    <div class="radio"><label><input type="radio" id="d4" name="degree" value="4 Year"> 4 Year College Degree</label></div>
+    <div class="radio"><label><input type="radio" id="d5" name="degree" value="Gradudate"> Graduate Degree</label></div>
+  </div>
+</div>
+
+<br>
+
+</div>
+
+<script>
+(function() {
+  var data = {};
+
+  experimentr.startTimer('demographics');
+
+  d3.selectAll('input')
+  .filter(function(d) { return this.name === 'age' ? this : null; })
+  .on('change', function() { data.age = this.value; validate(); });
+
+  d3.selectAll('input')
+  .filter(function(d) { return this.name === 'sex' ? this : null; })
+  .on('change', function() { data.sex = this.value; validate(); });
+
+  d3.selectAll('input')
+  .filter(function(d) { return this.name === 'degree' ? this : null; })
+  .on('change', function() { data.degree = this.value; validate(); });
+
+  function validate() {
+	  if(data.age && data.sex && data.degree) {
+	    experimentr.endTimer('demographics');
+	    experimentr.addData(data);
+	    experimentr.release();
+	  }
+	}
+}());
+</script>

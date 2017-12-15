@@ -1,0 +1,95 @@
+/*@import url(https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic);*/
+
+* {
+  color: #333;
+  /*font-family: "PT Sans", sans-serif;*/
+}
+
+body {
+  margin: 1em auto 4em auto;
+  width: 960px;
+}
+
+.class-blue {
+  color: #80b1d3;
+}
+
+.class-gold {
+  color: #fdb462;
+}
+
+.class-purple {
+  color: #bc80bd;
+}
+
+.class-red {
+  color: #fb8072;
+}
+
+.class-teal {
+  color: #8dd3c7;
+}
+
+h4.question {
+  font-weight: bolder;
+  text-transform: uppercase;
+  font-size: 90%;
+  color: #777;
+  margin-top: 30px;
+  margin-bottom: 4px;
+}
+
+#experimentr {
+  margin: 4em auto 1em auto;
+  width: 720px;
+}
+
+#control {
+  margin-top: 1em;
+}
+
+#next-button {
+  float: right;
+}
+
+.placeholder {
+  color: steelblue;
+  font-weight: bold;
+}
+
+.center {
+	text-align: center;
+}
+
+.colorSq {
+	width: 150px;
+}
+
+.indentList {
+	margin-left: 50px;
+}
+
+.splom {
+	width: 650px;
+}
+
+.splot {
+	width: 200px;
+}
+
+.splom, .splot {
+  margin-bottom: 10px;
+  margin-left: 1.5em;
+}
+
+code#points, code#best, code#classes {
+  min-width: 3em;
+  display: inline-block;
+}
+
+#question var {
+  padding: 0px 6px 2px 6px;
+  display: inline-block;
+  background-color: #f9f2f4;
+  border-radius: 4px;
+}

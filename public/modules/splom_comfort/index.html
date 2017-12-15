@@ -1,0 +1,66 @@
+<div id="splom_comfort">
+
+<h2 class="page-header">Scatterplot Matrices</h2>
+
+<p>Pictured below is a <strong>scatterplot matrix</strong> visualization. It shows pairwise relationships between the variables <var>v</var>, <var>w</var>, <var>x</var>, <var>y</var>, and <var>z</var> as a matrix of scatterplots. You can determine the pair of variables being visualized by the row and column of the scatterplot in the matrix. The legend for class colors can be found in the lower-right corner.</p>
+
+<p><img class="splom" src="images/splom_comfort_small.png"/></p>
+
+<br/>
+
+<p>For example, the first column encodes the variable <var>z</var> using horizontal position. The first row encodes the variable <var>v</var> using vertical position. Therefore, you can see the same scatterplot as before for variables <var>z</var> and <var>v</var> in the upper-left corner of this matrix.</p>
+
+<p>Can you find the scatterplot for variables <var>x</var> and <var>w</var> in the matrix? If so, which variable is encoded using horizontal position and which variable is encoded using vertical position? If you can answer these questions, you understand how to interpret a scatterplot matrix.</p>
+
+<details style="margin-left: 20px;">
+  <summary class="small"><em>Click to Show Answer</em></summary>
+  <p class="small">You can find the cell for variables <var>x</var> and <var>w</var> along the diagonal (near the upper-middle of the plot). The variable <var>x</var> is encoded using horizontal position and the variable <var>w</var> is encoded using vertical position.</p>
+</details>
+
+<div id="degree">
+  <h4 class="question">Question</h4>
+
+  <p><strong>Please rate your comfort level with scatterplot matrices on a scale of 1 to 7.</strong> A value of 1 indicates you are a novice and very uncomfortable interpreting scatterplot matrices and 7 indicates you are an expert and very comfortable interpreting scatterplot matrices.</p>
+
+  <div class="form-group" id="comfort">
+    <div class="radio"><label><input type="radio" id="d1" name="comfort" value="1"> 1 Very Uncomfortable</label></div>
+
+    <div class="radio"><label><input type="radio" id="d2" name="comfort" value="2"> 2 Uncomfortable</label></div>
+
+    <div class="radio"><label><input type="radio" id="d3" name="comfort" value="3"> 3 Somewhat Uncomfortable</label></div>
+
+    <div class="radio"><label><input type="radio" id="d4" name="comfort" value="4"> 4 Neutral</label></div>
+
+    <div class="radio"><label><input type="radio" id="d5" name="comfort" value="5"> 5 Somewhat Comfortable</label></div>
+
+    <div class="radio"><label><input type="radio" id="d6" name="comfort" value="6"> 6 Comfortable</label></div>
+
+    <div class="radio"><label><input type="radio" id="d7" name="comfort" value="7"> 7 Very Comfortable</label></div>
+
+  </div>
+
+</div>
+
+<br>
+
+</div>
+
+<script>
+(function() {
+  var data = {};
+
+  experimentr.startTimer('splom_comfort');
+
+  d3.selectAll('input')
+  .filter(function(d) { return this.name === 'comfort' ? this : null; })
+  .on('change', function() { data.splom_comfort = this.value; validate(); });
+
+  function validate() {
+	  if(data.splom_comfort) {
+	    experimentr.endTimer('splom_comfort');
+	    experimentr.addData(data);
+	    experimentr.release();
+	  }
+	}
+}());
+</script>

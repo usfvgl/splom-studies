@@ -1,0 +1,112 @@
+<div id="section2_train_animated" class="text-center">
+	<div id="question" class="lead"><strong>Drag the black rectangle to a region in any cell<br/> with the most circles and at least 4 different colors.</strong></div>
+	<div id="chart" height="630"></div>
+	<div><p>You selected <code id="points">0</code> circles and <code id="colors">0</code> colors. Your best was <code id="best">0</code> circles.<br/><em>Please note the above information will not be shown in the non-practice questions.</em></p></div>
+	<div class="small text-center"><p id="warning" class="text-danger">The "Next" button will only be enabled when at least 4 colors are highlighted.</p></div>
+</div>
+
+<script language="javascript" type="text/javascript">
+	var saved = experimentr.data();
+	var info = {};
+
+	var filename = 'train_2_2';
+	var animated = true;
+
+	var tag = 'section2_train_animated';
+
+	var attr = {
+		all: ["v","w","x","y","z","class"],
+		use: [0, 1, 2, 3, 4]
+	};
+
+	var category = {
+		name: "class",
+		index: 5,
+		values: ["A", "B", "C", "D", "E"]
+	};
+
+	var animate = {
+		isAnimate: animated,
+		initDraw: true,
+		animateNum: 8
+	};
+
+	var warning = d3.select("p#warning");
+
+	var points = d3.select("code#points");
+	var colors = d3.select("code#colors");
+	var best = d3.select("code#best");
+
+	var maxSelected = 0;
+
+	var title = "Section 2, Practice (Animated)";
+
+	var chart = multi_scatter('data/' + filename + '.csv', attr, category, animate, 'filled_normal', title, null, "true", "chart");
+
+	function preload() { chart.preload(); }
+	function setup() { chart.setup(); }
+	function draw() { chart.draw(); }
+
+	function mousePressed() { chart.mousePressed(); return false; }
+	function mouseMoved() { chart.mouseMoved(); return false; }
+	function mouseDragged() { chart.mouseDragged(); return false; }
+
+	function mouseReleased() {
+
+		if(chart.mouseReleased()) {
+			var timestamp = Date.now();
+
+			if(info[tag + '_first_select'] === undefined) {
+					info[tag + '_first_select'] = timestamp;
+			}
+			else {
+				info[tag + '_last_select'] = timestamp;
+			}
+
+			var classes = info[tag + '_classes'] = chart.highlightRect.numClasses;
+
+			if (classes >= 4) {
+				warning.attr("class", "text-muted");
+				experimentr.release();
+
+				maxSelected = Math.max(maxSelected, +chart.highlightRect.numPoints);
+				best.text(maxSelected);
+			}
+			else {
+				warning.attr("class", "text-danger");
+				experimentr.hold();
+			}
+
+			points.text(chart.highlightRect.numPoints);
+			colors.text(classes);
+		}
+
+		return false;
+	}
+
+	new p5();
+
+	(function() {
+		experimentr.startTimer(tag);
+		experimentr.onNext(function() {
+			experimentr.endTimer(tag);
+
+			if(info[tag + '_last_select'] === undefined) {
+				info[tag + '_last_select'] = 0;
+			}
+
+			info[tag + '_var1'] = chart.highlightRect.xAttr;
+			info[tag + '_var2'] = chart.highlightRect.yAttr;
+			info[tag + '_var1_range'] = [chart.highlightRect.xLow, chart.highlightRect.xHigh];
+			info[tag + '_var2_range'] = [chart.highlightRect.yLow, chart.highlightRect.yHigh];
+			info[tag + '_points']  = chart.highlightRect.numPoints;
+			info[tag + '_classes'] = chart.highlightRect.numClasses;
+
+			experimentr.addData(info);
+
+			remove(); // for some reason this fixed a lot of bugs?
+		});
+
+	}());
+
+</script>
